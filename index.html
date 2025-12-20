@@ -8,10 +8,13 @@
 </head>
 <body>
 
+    <!-- BOTÓN SUPERIOR -->
+    <button class="mode-btn" onclick="toggleScientific()">Calculadora científica</button>
+
     <div class="calculator">
         <div class="display" id="display">0</div>
 
-        <div class="buttons">
+        <div class="buttons basic">
             <button class="btn gray" onclick="clearDisplay()">AC</button>
             <button class="btn gray" onclick="invert()">±</button>
             <button class="btn gray" onclick="percent()">%</button>
@@ -36,9 +39,21 @@
             <button class="btn dark" onclick="appendNumber('.')">.</button>
             <button class="btn orange" onclick="calculate()">=</button>
         </div>
+
+        <!-- BOTONES CIENTÍFICOS (OCULTOS AL PRINCIPIO) -->
+        <div class="buttons scientific hidden">
+            <button class="btn sci" onclick="scientific('sin')">sin</button>
+            <button class="btn sci" onclick="scientific('cos')">cos</button>
+            <button class="btn sci" onclick="scientific('tan')">tan</button>
+            <button class="btn sci" onclick="scientific('sqrt')">√</button>
+            <button class="btn sci" onclick="scientific('pow')">x²</button>
+            <button class="btn sci" onclick="appendNumber('(')">(</button>
+            <button class="btn sci" onclick="appendNumber(')')">)</button>
+            <button class="btn sci" onclick="appendNumber('π')">π</button>
+        </div>
+
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-
