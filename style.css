@@ -110,3 +110,25 @@ body {
         padding: 15px;
     }
 }
+/* Compatibilidad Safari / macOS */
+.calculator {
+    -webkit-backdrop-filter: blur(20px); /* Safari necesita prefijo */
+    backdrop-filter: blur(20px);
+}
+
+/* Ajuste para pantallas Retina */
+@media 
+(-webkit-min-device-pixel-ratio: 2), 
+(min-resolution: 192dpi) {
+    .display {
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+}
+
+/* Ajuste de proporciones estilo macOS */
+@media (min-width: 1024px) {
+    .calculator {
+        transform: scale(1.2); /* Más grande en pantallas grandes */
+    }
+}
