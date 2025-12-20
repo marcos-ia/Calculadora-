@@ -1,5 +1,8 @@
+/* --- FONDO ANIMADO PARA QUE SE VEA EL VIDRIO --- */
 body {
-    background: #000;
+    background: linear-gradient(135deg, #0f0f0f, #1c1c1c, #3a3a3a, #1c1c1c);
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,16 +11,28 @@ body {
     font-family: "Helvetica Neue", sans-serif;
 }
 
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- CALCULADORA CON EFECTO VIDRIO --- */
 .calculator {
     width: 320px;
-    background: #000;
     padding: 20px;
     border-radius: 30px;
+
+    /* Glassmorphism */
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
 }
 
+/* --- DISPLAY --- */
 .display {
-    background: #000;
     color: white;
     font-size: 3rem;
     text-align: right;
@@ -27,6 +42,7 @@ body {
     overflow: hidden;
 }
 
+/* --- BOTONES --- */
 .buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -64,9 +80,8 @@ body {
 .zero {
     grid-column: span 2;
 }
-/* --- RESPONSIVE DESIGN --- */
 
-/* Ajuste para pantallas pequeñas (móviles) */
+/* --- RESPONSIVE --- */
 @media (max-width: 480px) {
     .calculator {
         width: 90%;
@@ -85,7 +100,6 @@ body {
     }
 }
 
-/* Ajuste para pantallas muy pequeñas (móviles compactos) */
 @media (max-width: 360px) {
     .display {
         font-size: 2rem;
@@ -95,12 +109,4 @@ body {
         font-size: 1.2rem;
         padding: 15px;
     }
-}
-/* --- GLASSMORPHISM EFFECT --- */
-.calculator {
-    background: rgba(255, 255, 255, 0.08); /* Transparencia suave */
-    backdrop-filter: blur(20px);           /* Difuminado tipo vidrio */
-    -webkit-backdrop-filter: blur(20px);   /* Compatibilidad iOS */
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
 }
