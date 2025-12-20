@@ -1,6 +1,7 @@
 let current = "";
 let previous = "";
 let operation = null;
+let scientificMode = false;
 
 function updateDisplay() {
     document.getElementById("display").innerText = current || "0";
@@ -57,4 +58,27 @@ function calculate() {
     previous = "";
     operation = null;
     updateDisplay();
+}
+
+/* --- FUNCIONES CIENTÍFICAS --- */
+function scientific(type) {
+    let num = parseFloat(current);
+
+    if (type === "sin") current = Math.sin(num).toString();
+    if (type === "cos") current = Math.cos(num).toString();
+    if (type === "tan") current = Math.tan(num).toString();
+    if (type === "sqrt") current = Math.sqrt(num).toString();
+    if (type === "pow") current = Math.pow(num, 2).toString();
+
+    updateDisplay();
+}
+
+/* --- CAMBIAR ENTRE MODOS --- */
+function toggleScientific() {
+    scientificMode = !scientificMode;
+
+    document.querySelector(".scientific").classList.toggle("hidden");
+
+    document.querySelector(".mode-btn").innerText =
+        scientificMode ? "Calculadora normal" : "Calculadora científica";
 }
