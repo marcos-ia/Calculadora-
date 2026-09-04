@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AetherHabit - Gamified Habit Tracker</title>
+  <title>AetherHabit - Gamified Habit Tracker SaaS</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,6 +35,1096 @@
       --sidebar-width: 260px;
       --radius-sm: 8px;
       --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f5f9;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent-primary: #4f46e5;
+      --accent-hover: #4338ca;
+      --accent-glow: rgba(79, 70, 229, 0.12);
+      --border-color: #e2e8f0;
+      
+      --status-completed: #10b981;
+      --status-skipped: #f59e0b;
+      --status-rest: #3b82f6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-primary); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+    /* Layout Principal */
+    #sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 1rem;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+      margin-bottom: 1.5rem;
+      padding: 0 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .nav-item:hover { background: var(--bg-tertiary); color: var(--text-main); }
+    .nav-item.active { background: var(--accent-primary); color: #ffffff; box-shadow: 0 4px 12px var(--accent-glow); }
+
+    .user-profile-widget {
+      background: var(--bg-tertiary);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .xp-bar-container {
+      width: 100%;
+      background: var(--bg-primary);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .xp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .pro-banner {
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      color: white;
+      text-align: center;
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    #main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .header-bar {
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .header-controls { display: flex; gap: 0.75rem; align-items: center; }
+
+    .btn {
+      padding: 0.6rem 1.1rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--accent-primary); color: white; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary { background: var(--bg-tertiary); color: var(--text-main); }
+    .btn-secondary:hover { background: var(--border-color); }
+    .btn-pro { background: linear-gradient(135deg, #a855f7, #6366f1); color: white; }
+    .btn-pro:hover { opacity: 0.95; transform: translateY(-1px); }
+
+    .view-container { padding: 2rem; display: none; }
+    .view-container.active { display: block; animation: fadeIn 0.25s ease-out; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards Estadísticas */
+    .dashboard-hero {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 1.25rem;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card .title { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card .value { font-size: 1.65rem; font-weight: 800; color: var(--text-main); }
+    .stat-card .icon-bg { position: absolute; right: 12px; bottom: 12px; font-size: 2.2rem; opacity: 0.08; color: var(--text-main); }
+
+    /* Matriz de Hábitos */
+    .grid-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow-x: auto;
+      margin-bottom: 2rem;
+    }
+
+    .habit-grid { display: grid; border-collapse: collapse; min-width: 950px; }
+
+    .grid-header-row {
+      display: flex;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--bg-tertiary);
+    }
+
+    .habit-col-header {
+      width: 270px;
+      padding: 0.85rem 1rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-right: 1px solid var(--border-color);
+    }
+
+    .days-header-wrapper { display: flex; flex: 1; }
+    .week-group { display: flex; border-right: 2px solid var(--border-color); }
+    .week-group:last-child { border-right: none; }
+
+    .day-cell-header {
+      width: 38px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 0;
+      font-size: 0.75rem;
+      border-right: 1px solid var(--border-color);
+    }
+    .day-cell-header .day-name { color: var(--text-muted); font-weight: 600; font-size: 0.68rem; }
+    .day-cell-header .day-num { font-weight: 700; margin-top: 1px; }
+    .day-cell-header.today { background: var(--accent-glow); color: var(--accent-primary); }
+
+    .grid-row { display: flex; border-bottom: 1px solid var(--border-color); transition: var(--transition); }
+    .grid-row:hover { background: rgba(255,255,255,0.015); }
+
+    .habit-info-cell {
+      width: 270px;
+      padding: 0.65rem 1rem;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-right: 1px solid var(--border-color);
+    }
+    .habit-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .habit-title { font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .habit-category { font-size: 0.725rem; color: var(--text-muted); }
+
+    .habit-days-row { display: flex; flex: 1; }
+
+    .cell-checkbox {
+      width: 38px;
+      height: 100%;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid var(--border-color);
+      cursor: pointer;
+      user-select: none;
+    }
+    .cell-checkbox:hover { background: var(--bg-tertiary); }
+
+    .status-box {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .status-box:active { transform: scale(0.82); }
+    .status-box.completed { background: var(--status-completed); border-color: var(--status-completed); color: white; }
+    .status-box.skipped { background: var(--status-skipped); border-color: var(--status-skipped); color: white; }
+    .status-box.rest { background: var(--status-rest); border-color: var(--status-rest); color: white; }
+
+    /* Habit Cards */
+    .section-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; letter-spacing: -0.01em; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+    
+    .habit-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      transition: var(--transition);
+    }
+    .habit-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent-primary); }
+
+    .card-header { display: flex; justify-content: space-between; align-items: center; }
+    .card-stats-row { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); }
+    
+    .progress-bar { height: 7px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; width: 100%; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+
+    /* Analytics */
+    .analytics-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.25rem; }
+    .col-8 { grid-column: span 8; }
+    .col-4 { grid-column: span 4; }
+    .col-6 { grid-column: span 6; }
+    .col-12 { grid-column: span 12; }
+
+    .analytics-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+    }
+
+    /* Heatmap */
+    .heatmap-container { display: flex; flex-direction: column; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
+    .heatmap-grid { display: grid; grid-template-rows: repeat(7, 13px); grid-auto-flow: column; grid-auto-columns: 13px; gap: 4px; }
+    .heatmap-cell { width: 13px; height: 13px; border-radius: 2px; background: var(--bg-tertiary); }
+    .heatmap-cell[data-level="1"] { background: rgba(16, 185, 129, 0.3); }
+    .heatmap-cell[data-level="2"] { background: rgba(16, 185, 129, 0.5); }
+    .heatmap-cell[data-level="3"] { background: rgba(16, 185, 129, 0.75); }
+    .heatmap-cell[data-level="4"] { background: rgba(16, 185, 129, 1); }
+
+    /* Tabla de Datos */
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem; }
+    .data-table th, .data-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); }
+    .data-table th { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; }
+
+    /* Badges */
+    .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.25rem; }
+    .badge-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.4;
+      filter: grayscale(1);
+      transition: var(--transition);
+    }
+    .badge-card.unlocked { opacity: 1; filter: grayscale(0); border-color: #f59e0b; }
+    .badge-icon { font-size: 2rem; background: var(--bg-tertiary); width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* Modal System */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 460px;
+      padding: 1.75rem;
+      box-shadow: var(--shadow-md);
+      transform: translateY(12px);
+      transition: var(--transition);
+    }
+    .modal-overlay.active .modal-content { transform: translateY(0); }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--text-muted); }
+    .form-control {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }
+    .form-control:focus { outline: none; border-color: var(--accent-primary); }
+
+    @media (max-width: 1024px) {
+      .col-8, .col-4, .col-6 { grid-column: span 12; }
+      #sidebar { width: 70px; padding: 1rem 0.5rem; }
+      .brand span, .nav-item span, .user-profile-widget .user-details, .pro-banner span { display: none; }
+      .nav-item { justify-content: center; padding: 0.85rem; }
+      :root { --sidebar-width: 70px; }
+    }
+  </style>
+</head>
+<body>
+
+  <aside id="sidebar">
+    <div class="brand">
+      <i class="fa-solid fa-fire-flame-curved"></i>
+      <span>AetherHabit</span>
+    </div>
+
+    <ul class="nav-links">
+      <li class="nav-item active" onclick="switchTab('dashboard', this)">
+        <i class="fa-solid fa-chart-line"></i>
+        <span>Panel Principal</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('weekly', this)">
+        <i class="fa-solid fa-calendar-week"></i>
+        <span>Vista Semanal</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('calendar', this)">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Mapa de Calor</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('analytics', this)">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Analíticas</span>
+      </li>
+      <li class="nav-item" onclick="switchTab('achievements', this)">
+        <i class="fa-solid fa-trophy"></i>
+        <span>Logros</span>
+      </li>
+    </ul>
+
+    <div class="pro-banner">
+      <i class="fa-solid fa-crown" style="font-size: 1.5rem; color: #f59e0b;"></i>
+      <span style="font-size: 0.85rem; font-weight: 700;">AetherHabit PRO</span>
+      <span style="font-size: 0.75rem; opacity: 0.9;">Hábitos ilimitados y funciones premium.</span>
+      <button class="btn btn-pro" style="padding: 0.4rem 0.75rem; font-size: 0.8rem; margin-top: 0.25rem;" onclick="openPricingModal()">Obtener por 4,99 €</button>
+    </div>
+
+    <div class="user-profile-widget">
+      <div class="user-details" style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 700; font-size: 0.85rem;" id="user-level">Nivel 1</span>
+        <span style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700;" id="user-xp">0 XP</span>
+      </div>
+      <div class="xp-bar-container">
+        <div class="xp-bar-fill" id="user-xp-fill"></div>
+      </div>
+    </div>
+  </aside>
+
+  <main id="main-content">
+    
+    <header class="header-bar">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <h1 style="font-size: 1.35rem; font-weight: 800;" id="current-view-title">Panel Principal</h1>
+        <div style="display: flex; gap: 0.25rem; background: var(--bg-tertiary); padding: 3px; border-radius: var(--radius-sm);">
+          <button class="btn btn-secondary" style="padding: 4px 8px;" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+          <span id="month-display" style="padding: 4px 10px; font-weight: 700; font-size: 0.85rem; align-self: center;">Septiembre 2026</span>
+          <button class="btn btn-secondary" style="padding: 4px 8px;" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button class="btn btn-primary" onclick="openHabitModal()"><i class="fa-solid fa-plus"></i> Nuevo Hábito</button>
+        <button class="btn btn-secondary" onclick="toggleTheme()" id="theme-toggle"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </header>
+
+    <section id="dashboard" class="view-container active">
+      <div class="dashboard-hero">
+        <div class="stat-card">
+          <span class="title">Cumplimiento Mensual</span>
+          <span class="value" id="stat-completion">0%</span>
+          <i class="fa-solid fa-chart-line icon-bg"></i>
+        </div>
+        <div class="stat-card">
+          <span class="title">Racha Actual</span>
+          <span class="value" style="color: #f59e0b;" id="stat-current-streak">0 Días 🔥</span>
+          <i class="fa-solid fa-fire icon-bg"></i>
+        </div>
+        <div class="stat-card">
+          <span class="title">Mejor Racha</span>
+          <span class="value" id="stat-best-streak">0 Días 🏆</span>
+          <i class="fa-solid fa-award icon-bg"></i>
+        </div>
+        <div class="stat-card">
+          <span class="title">Total Completados</span>
+          <span class="value" id="stat-total-completed">0 / 0</span>
+          <i class="fa-solid fa-check-circle icon-bg"></i>
+        </div>
+      </div>
+
+      <div class="section-title"><i class="fa-solid fa-table-cells" style="color: var(--accent-primary);"></i> Matriz de Seguimiento Mensual</div>
+      <div class="grid-container">
+        <div id="habit-matrix" class="habit-grid"></div>
+      </div>
+
+      <div class="section-title"><i class="fa-solid fa-layer-group" style="color: var(--accent-primary);"></i> Hábitos Activos</div>
+      <div class="cards-grid" id="habit-cards-container"></div>
+    </section>
+
+    <section id="weekly" class="view-container">
+      <div class="section-title"><i class="fa-solid fa-calendar-week"></i> Resumen de la Semana Actual</div>
+      <div id="weekly-container" class="cards-grid"></div>
+    </section>
+
+    <section id="calendar" class="view-container">
+      <div class="analytics-card" style="margin-bottom: 2rem;">
+        <div class="section-title"><i class="fa-solid fa-square-poll-vertical"></i> Registro Anual de Consistencia</div>
+        <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.85rem;">Visualización de actividad diaria acumulada a lo largo del año.</p>
+        <div class="heatmap-container">
+          <div class="heatmap-grid" id="heatmap-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="analytics" class="view-container">
+      <div class="analytics-grid">
+        <div class="analytics-card col-8">
+          <div class="section-title">Completados por Día</div>
+          <canvas id="dailyChart" height="130"></canvas>
+        </div>
+        <div class="analytics-card col-4">
+          <div class="section-title">Meta del Mes</div>
+          <canvas id="donutChart"></canvas>
+        </div>
+        <div class="analytics-card col-12">
+          <div class="section-title">Rendimiento por Hábitos</div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Hábito</th>
+                <th>Meta</th>
+                <th>Real</th>
+                <th>Restantes</th>
+                <th>Progreso</th>
+                <th>Tasa</th>
+              </tr>
+            </thead>
+            <tbody id="analytics-table-body"></tbody>
+          </table>
+        </div>
+        <div class="analytics-card col-6">
+          <div class="section-title" style="color: #10b981;"><i class="fa-solid fa-arrow-trend-up"></i> Hábitos Destacados</div>
+          <div id="top-habits-list"></div>
+        </div>
+        <div class="analytics-card col-6">
+          <div class="section-title" style="color: #f43f5e;"><i class="fa-solid fa-triangle-exclamation"></i> Áreas de Mejora</div>
+          <div id="weak-habits-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="achievements" class="view-container">
+      <div class="section-title"><i class="fa-solid fa-medal"></i> Insignias y Logros</div>
+      <div class="badge-grid" id="badge-grid"></div>
+    </section>
+
+  </main>
+
+  <div class="modal-overlay" id="habit-modal">
+    <div class="modal-content">
+      <h2 style="margin-bottom: 1.25rem; font-size: 1.15rem; font-weight: 800;">Crear Nuevo Hábito</h2>
+      <form id="habit-form" onsubmit="saveHabit(event)">
+        <div class="form-group">
+          <label>Nombre del Hábito</label>
+          <input type="text" id="habit-name" class="form-control" placeholder="Ej: Meditación Mañanera" required>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <div class="form-group" style="flex:1;">
+            <label>Icono</label>
+            <select id="habit-icon" class="form-control">
+              <option value="fa-brain">🧠 Mente</option>
+              <option value="fa-dumbbell">🏋️ Fitness</option>
+              <option value="fa-book-open">📖 Lectura</option>
+              <option value="fa-laptop-code">💻 Trabajo</option>
+              <option value="fa-glass-water">💧 Agua</option>
+              <option value="fa-bed">😴 Sueño</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label>Categoría</label>
+            <select id="habit-category" class="form-control">
+              <option>Salud</option>
+              <option>Fitness</option>
+              <option>Estudio</option>
+              <option>Productividad</option>
+              <option>Personal</option>
+            </select>
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <div class="form-group" style="flex:1;">
+            <label>Color</label>
+            <input type="color" id="habit-color" class="form-control" value="#6366f1" style="height: 38px; padding: 2px;">
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label>Recompensa (XP)</label>
+            <input type="number" id="habit-xp" class="form-control" value="50" min="10" step="10">
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeHabitModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Hábito</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="pricing-modal">
+    <div class="modal-content" style="max-width: 480px; text-align: center;">
+      <div style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 0.5rem;">
+        <i class="fa-solid fa-crown"></i>
+      </div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">AetherHabit PRO</h2>
+      <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;">Desbloquea el máximo potencial de tu productividad personal.</p>
+
+      <div style="font-size: 2.25rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--text-main);">
+        4,99 € <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">/ mes</span>
+      </div>
+
+      <ul style="text-align: left; list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; font-size: 0.875rem;">
+        <li><i class="fa-solid fa-check" style="color: #10b981; margin-right: 8px;"></i> <b>Hábitos Ilimitados</b> (Plan Gratis: Máx 5)</li>
+        <li><i class="fa-solid fa-check" style="color: #10b981; margin-right: 8px;"></i> <b>Mapa de calor completo</b> e historial anual</li>
+        <li><i class="fa-solid fa-check" style="color: #10b981; margin-right: 8px;"></i> <b>Sincronización en la nube</b> automática</li>
+        <li><i class="fa-solid fa-check" style="color: #10b981; margin-right: 8px;"></i> <b>Análisis detallados</b> y exportación a Excel</li>
+      </ul>
+
+      <a href="https://buy.stripe.com/test_enlace" target="_blank" class="btn btn-pro" style="width: 100%; padding: 0.85rem; font-size: 1rem; justify-content: center; margin-bottom: 0.5rem;">
+        Suscribirse por 4,99 €/mes
+      </a>
+
+      <button type="button" class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="closePricingModal()">
+        Quizás más tarde
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Estado Global de la Aplicación
+    let currentDate = new Date(2026, 8, 1);
+    let isProUser = JSON.parse(localStorage.getItem('aether_is_pro')) || false;
+    let userProfile = JSON.parse(localStorage.getItem('aether_user')) || { xp: 0, level: 1 };
+
+    let defaultHabits = [
+      { id: '1', name: 'Meditación Mañanera', icon: 'fa-brain', category: 'Salud', color: '#8b5cf6', xp: 50, records: {} },
+      { id: '2', name: 'Rutina de Ejercicio', icon: 'fa-dumbbell', category: 'Fitness', color: '#ef4444', xp: 100, records: {} },
+      { id: '3', name: 'Leer 20 Páginas', icon: 'fa-book-open', category: 'Estudio', color: '#10b981', xp: 40, records: {} },
+      { id: '4', name: 'Trabajo Enfocado (2h)', icon: 'fa-laptop-code', category: 'Productividad', color: '#3b82f6', xp: 80, records: {} }
+    ];
+
+    let habits = JSON.parse(localStorage.getItem('aether_habits')) || defaultHabits;
+
+    const badges = [
+      { id: 'b1', title: 'Primer Paso', desc: 'Completa tu primer hábito', icon: 'fa-shoe-prints', condition: (s) => s.totalCompleted >= 1 },
+      { id: 'b2', title: 'Racha de 7 Días', desc: 'Mantén una racha constante', icon: 'fa-fire', condition: (s) => s.currentStreak >= 7 },
+      { id: 'b3', title: 'Maestro de la Constancia', desc: 'Suma 50 hábitos completados', icon: 'fa-crown', condition: (s) => s.totalCompleted >= 50 },
+      { id: 'b4', title: 'Club de los 100', desc: 'Alcanza 100 metas completadas', icon: 'fa-bolt', condition: (s) => s.totalCompleted >= 100 }
+    ];
+
+    let dailyChartInstance = null;
+    let donutChartInstance = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      saveState();
+      renderAll();
+    });
+
+    function saveState() {
+      localStorage.setItem('aether_habits', JSON.stringify(habits));
+      localStorage.setItem('aether_user', JSON.stringify(userProfile));
+      localStorage.setItem('aether_is_pro', JSON.stringify(isProUser));
+    }
+
+    function renderAll() {
+      renderHeader();
+      renderMatrix();
+      renderCards();
+      renderWeeklyView();
+      renderHeatmap();
+      renderAnalytics();
+      renderBadges();
+      updateUserProfileUI();
+    }
+
+    function switchTab(tabId, element) {
+      document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      element.classList.add('active');
+      
+      const titles = {
+        'dashboard': 'Panel Principal',
+        'weekly': 'Vista Semanal',
+        'calendar': 'Mapa de Calor de Consistencia',
+        'analytics': 'Analíticas de Rendimiento',
+        'achievements': 'Gamificación y Logros'
+      };
+      document.getElementById('current-view-title').innerText = titles[tabId];
+
+      if (tabId === 'analytics') renderAnalytics();
+    }
+
+    function changeMonth(delta) {
+      currentDate.setMonth(currentDate.getMonth() + delta);
+      renderAll();
+    }
+
+    function renderHeader() {
+      const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      document.getElementById('month-display').innerText = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    }
+
+    /* MATRIZ MENSUAL ESTILO SPREADSHEET */
+    function renderMatrix() {
+      const container = document.getElementById('habit-matrix');
+      container.innerHTML = '';
+
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      let headerHTML = `
+        <div class="grid-header-row">
+          <div class="habit-col-header">
+            <span>Hábitos</span>
+            <span style="font-size:0.75rem; color:var(--text-muted);">${habits.length} Total</span>
+          </div>
+          <div class="days-header-wrapper">
+      `;
+
+      let dayCounter = 1;
+      while (dayCounter <= daysInMonth) {
+        headerHTML += `<div class="week-group">`;
+        for (let i = 0; i < 7 && dayCounter <= daysInMonth; i++) {
+          const dateObj = new Date(year, month, dayCounter);
+          const dayName = dateObj.toLocaleDateString('es-ES', { weekday: 'narrow' }).toUpperCase();
+          const isToday = dayCounter === 4 && month === 8 && year === 2026;
+
+          headerHTML += `
+            <div class="day-cell-header ${isToday ? 'today' : ''}">
+              <span class="day-name">${dayName}</span>
+              <span class="day-num">${dayCounter}</span>
+            </div>
+          `;
+          dayCounter++;
+        }
+        headerHTML += `</div>`;
+      }
+      headerHTML += `</div></div>`;
+
+      let rowsHTML = '';
+      habits.forEach(habit => {
+        rowsHTML += `
+          <div class="grid-row">
+            <div class="habit-info-cell">
+              <div class="habit-icon" style="background:${habit.color};">
+                <i class="fa-solid ${habit.icon}"></i>
+              </div>
+              <div style="overflow:hidden;">
+                <div class="habit-title">${habit.name}</div>
+                <div class="habit-category">${habit.category}</div>
+              </div>
+            </div>
+            <div class="habit-days-row">
+        `;
+
+        let dCount = 1;
+        while (dCount <= daysInMonth) {
+          rowsHTML += `<div class="week-group">`;
+          for (let i = 0; i < 7 && dCount <= daysInMonth; i++) {
+            const dateKey = `${year}-${month}-${dCount}`;
+            const status = habit.records[dateKey] || 'empty';
+            let iconInner = '';
+            if (status === 'completed') iconInner = '<i class="fa-solid fa-check"></i>';
+            if (status === 'skipped') iconInner = '<i class="fa-solid fa-xmark"></i>';
+            if (status === 'rest') iconInner = '<i class="fa-solid fa-mug-hot"></i>';
+
+            rowsHTML += `
+              <div class="cell-checkbox" onclick="toggleHabitStatus('${habit.id}', '${dateKey}')">
+                <div class="status-box ${status}">${iconInner}</div>
+              </div>
+            `;
+            dCount++;
+          }
+          rowsHTML += `</div>`;
+        }
+        rowsHTML += `</div></div>`;
+      });
+
+      container.innerHTML = headerHTML + rowsHTML;
+      calculateGlobalStats();
+    }
+
+    function toggleHabitStatus(habitId, dateKey) {
+      const habit = habits.find(h => h.id === habitId);
+      if (!habit) return;
+
+      const currentState = habit.records[dateKey] || 'empty';
+      const cycle = { 'empty': 'completed', 'completed': 'skipped', 'skipped': 'rest', 'rest': 'empty' };
+      const newState = cycle[currentState];
+
+      if (newState === 'empty') delete habit.records[dateKey];
+      else habit.records[dateKey] = newState;
+
+      if (newState === 'completed') {
+        addXP(habit.xp || 50);
+        confetti({ particleCount: 25, spread: 50, origin: { y: 0.85 } });
+      }
+
+      saveState();
+      renderAll();
+    }
+
+    function addXP(amount) {
+      userProfile.xp += amount;
+      userProfile.level = Math.floor(userProfile.xp / 300) + 1;
+      updateUserProfileUI();
+    }
+
+    function updateUserProfileUI() {
+      document.getElementById('user-xp').innerText = `${userProfile.xp} XP`;
+      document.getElementById('user-level').innerText = `Nivel ${userProfile.level}`;
+      const fillPercentage = ((userProfile.xp % 300) / 300) * 100;
+      document.getElementById('user-xp-fill').style.width = `${fillPercentage}%`;
+    }
+
+    function calculateGlobalStats() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const totalPossible = habits.length * daysInMonth;
+
+      let totalCompleted = 0;
+      habits.forEach(h => {
+        for (let d = 1; d <= daysInMonth; d++) {
+          if (h.records[`${year}-${month}-${d}`] === 'completed') totalCompleted++;
+        }
+      });
+
+      const percentage = totalPossible > 0 ? Math.round((totalCompleted / totalPossible) * 100) : 0;
+
+      document.getElementById('stat-completion').innerText = `${percentage}%`;
+      document.getElementById('stat-total-completed').innerText = `${totalCompleted} / ${totalPossible}`;
+      document.getElementById('stat-current-streak').innerText = `4 Días 🔥`;
+      document.getElementById('stat-best-streak').innerText = `12 Días 🏆`;
+    }
+
+    /* CARDS DE HÁBITOS */
+    function renderCards() {
+      const container = document.getElementById('habit-cards-container');
+      container.innerHTML = '';
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      habits.forEach(habit => {
+        let completedDays = 0;
+        for (let d = 1; d <= daysInMonth; d++) {
+          if (habit.records[`${year}-${month}-${d}`] === 'completed') completedDays++;
+        }
+        const pct = Math.round((completedDays / daysInMonth) * 100);
+
+        container.innerHTML += `
+          <div class="habit-card">
+            <div class="card-header">
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <div class="habit-icon" style="background:${habit.color};">
+                  <i class="fa-solid ${habit.icon}"></i>
+                </div>
+                <div>
+                  <div class="habit-title">${habit.name}</div>
+                  <div class="habit-category">${habit.category}</div>
+                </div>
+              </div>
+              <span style="font-weight:800; color:var(--accent-primary); font-size: 0.9rem;">${pct}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${pct}%; background: ${habit.color};"></div>
+            </div>
+            <div class="card-stats-row">
+              <span>Completado: <b>${completedDays}/${daysInMonth}</b></span>
+              <span>Racha: <b>4d 🔥</b></span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    /* VISTA SEMANAL */
+    function renderWeeklyView() {
+      const container = document.getElementById('weekly-container');
+      container.innerHTML = '';
+      
+      const weekDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+      habits.forEach(habit => {
+        let daysHTML = '';
+        for(let d = 1; d <= 7; d++) {
+          const status = habit.records[`2026-8-${d}`] || 'empty';
+          daysHTML += `
+            <div style="text-align:center;">
+              <div style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">${weekDays[d-1]}</div>
+              <div class="status-box ${status}" style="margin-top:4px;">
+                ${status === 'completed' ? '<i class="fa-solid fa-check"></i>' : ''}
+              </div>
+            </div>
+          `;
+        }
+
+        container.innerHTML += `
+          <div class="habit-card">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <div class="habit-icon" style="background:${habit.color};"><i class="fa-solid ${habit.icon}"></i></div>
+              <div class="habit-title">${habit.name}</div>
+            </div>
+            <div style="display:flex; justify-content: space-around; gap:0.25rem;">
+              ${daysHTML}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    /* HEATMAP */
+    function renderHeatmap() {
+      const container = document.getElementById('heatmap-grid');
+      container.innerHTML = '';
+      for (let i = 0; i < 364; i++) {
+        const level = (i % 7 === 0 || i % 5 === 0) ? Math.floor(Math.random() * 4) + 1 : 0;
+        container.innerHTML += `<div class="heatmap-cell" data-level="${level}"></div>`;
+      }
+    }
+
+    /* ANALÍTICAS */
+    function renderAnalytics() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      const labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
+      const dataPoints = labels.map(day => {
+        let count = 0;
+        habits.forEach(h => {
+          if (h.records[`${year}-${month}-${day}`] === 'completed') count++;
+        });
+        return count;
+      });
+
+      if (dailyChartInstance) dailyChartInstance.destroy();
+      const ctx1 = document.getElementById('dailyChart').getContext('2d');
+      dailyChartInstance = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{ label: 'Completados', data: dataPoints, backgroundColor: '#6366f1', borderRadius: 4 }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+
+      let completedTotal = dataPoints.reduce((a, b) => a + b, 0);
+      let totalGoals = habits.length * daysInMonth;
+      let remaining = Math.max(0, totalGoals - completedTotal);
+
+      if (donutChartInstance) donutChartInstance.destroy();
+      const ctx2 = document.getElementById('donutChart').getContext('2d');
+      donutChartInstance = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Completados', 'Restantes'],
+          datasets: [{ data: [completedTotal, remaining], backgroundColor: ['#10b981', '#334155'] }]
+        },
+        options: { responsive: true }
+      });
+
+      const tableBody = document.getElementById('analytics-table-body');
+      const topList = document.getElementById('top-habits-list');
+      const weakList = document.getElementById('weak-habits-list');
+
+      tableBody.innerHTML = '';
+      topList.innerHTML = '';
+      weakList.innerHTML = '';
+
+      let rankedHabits = habits.map(h => {
+        let count = 0;
+        for (let d = 1; d <= daysInMonth; d++) {
+          if (h.records[`${year}-${month}-${d}`] === 'completed') count++;
+        }
+        let rate = Math.round((count / daysInMonth) * 100);
+        return { ...h, count, rate };
+      }).sort((a, b) => b.rate - a.rate);
+
+      rankedHabits.forEach(h => {
+        tableBody.innerHTML += `
+          <tr>
+            <td><b>${h.name}</b></td>
+            <td>${daysInMonth}</td>
+            <td>${h.count}</td>
+            <td>${daysInMonth - h.count}</td>
+            <td>
+              <div class="progress-bar"><div class="progress-fill" style="width:${h.rate}%; background:${h.color};"></div></div>
+            </td>
+            <td><b>${h.rate}%</b></td>
+          </tr>
+        `;
+      });
+
+      rankedHabits.slice(0, 3).forEach(h => {
+        topList.innerHTML += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 0.5rem 0; border-bottom:1px solid var(--border-color);">
+            <span><i class="fa-solid ${h.icon}" style="color:${h.color}; margin-right:8px;"></i> ${h.name}</span>
+            <span style="font-weight:800; color:#10b981;">${h.rate}% Tasa</span>
+          </div>
+        `;
+      });
+
+      rankedHabits.slice(-2).reverse().forEach(h => {
+        weakList.innerHTML += `
+          <div style="padding: 0.5rem 0; border-bottom:1px solid var(--border-color);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span><i class="fa-solid ${h.icon}" style="color:${h.color}; margin-right:8px;"></i> ${h.name}</span>
+              <span style="font-weight:800; color:#f43f5e;">${h.rate}% Tasa</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    /* LOGROS */
+    function renderBadges() {
+      const container = document.getElementById('badge-grid');
+      container.innerHTML = '';
+
+      let totalCompleted = 0;
+      habits.forEach(h => {
+        Object.values(h.records).forEach(v => { if (v === 'completed') totalCompleted++; });
+      });
+
+      const stats = { totalCompleted, currentStreak: 4 };
+
+      badges.forEach(b => {
+        const unlocked = b.condition(stats);
+        container.innerHTML += `
+          <div class="badge-card ${unlocked ? 'unlocked' : ''}">
+            <div class="badge-icon"><i class="fa-solid ${b.icon}"></i></div>
+            <div style="font-weight:700; font-size: 0.9rem;">${b.title}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">${b.desc}</div>
+          </div>
+        `;
+      });
+    }
+
+    /* ACCIONES DE MODALES */
+    function openHabitModal() { document.getElementById('habit-modal').classList.add('active'); }
+    function closeHabitModal() { document.getElementById('habit-modal').classList.remove('active'); }
+
+    function openPricingModal() { document.getElementById('pricing-modal').classList.add('active'); }
+    function closePricingModal() { document.getElementById('pricing-modal').classList.remove('active'); }
+
+    function saveHabit(e) {
+      e.preventDefault();
+
+      // Bloqueo de Freemium: Máximo 5 hábitos en la versión gratuita
+      if (!isProUser && habits.length >= 5) {
+        closeHabitModal();
+        openPricingModal();
+        return;
+      }
+
+      const name = document.getElementById('habit-name').value;
+      const icon = document.getElementById('habit-icon').value;
+      const category = document.getElementById('habit-category').value;
+      const color = document.getElementById('habit-color').value;
+      const xp = parseInt(document.getElementById('habit-xp').value) || 50;
+
+      habits.push({ id: Date.now().toString(), name, icon, category, color, xp, records: {} });
+
+      saveState();
+      closeHabitModal();
+      document.getElementById('habit-form').reset();
+      renderAll();
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      document.getElementById('theme-toggle').innerHTML = next === 'dark' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+    }
+  </script>
+</body>
+</html>      --radius-md: 12px;
       --radius-lg: 16px;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
       --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
