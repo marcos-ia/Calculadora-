@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AetherHabit - Gamified Habit Tracker</title>
   
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
@@ -19,23 +25,19 @@
       --text-muted: #94a3b8;
       --accent-primary: #6366f1;
       --accent-hover: #4f46e5;
-      --accent-glow: rgba(99, 102, 241, 0.25);
+      --accent-glow: rgba(99, 102, 241, 0.2);
       --border-color: #334155;
       
       --status-completed: #10b981;
-      --status-completed-bg: rgba(16, 185, 129, 0.2);
       --status-skipped: #f59e0b;
-      --status-skipped-bg: rgba(245, 158, 11, 0.2);
       --status-rest: #3b82f6;
-      --status-rest-bg: rgba(59, 130, 246, 0.2);
-      --status-empty: #1e293b;
 
-      --sidebar-width: 250px;
+      --sidebar-width: 260px;
       --radius-sm: 8px;
       --radius-md: 12px;
-      --radius-lg: 18px;
-      --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.25);
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
       --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -48,22 +50,18 @@
       --text-muted: #64748b;
       --accent-primary: #4f46e5;
       --accent-hover: #4338ca;
-      --accent-glow: rgba(79, 70, 229, 0.15);
+      --accent-glow: rgba(79, 70, 229, 0.12);
       --border-color: #e2e8f0;
       
       --status-completed: #10b981;
-      --status-completed-bg: #d1fae5;
       --status-skipped: #f59e0b;
-      --status-skipped-bg: #fef3c7;
       --status-rest: #3b82f6;
-      --status-rest-bg: #dbeafe;
-      --status-empty: #f1f5f9;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
     body { background-color: var(--bg-primary); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-    /* Layout Components */
+    /* Layout Principal */
     #sidebar {
       width: var(--sidebar-width);
       background: var(--bg-secondary);
@@ -72,7 +70,6 @@
       flex-direction: column;
       padding: 1.5rem 1rem;
       flex-shrink: 0;
-      transition: var(--transition);
       z-index: 100;
     }
 
@@ -85,22 +82,24 @@
       color: var(--accent-primary);
       margin-bottom: 2rem;
       padding: 0 0.5rem;
+      letter-spacing: -0.02em;
     }
 
-    .nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+    .nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      padding: 0.8rem 1rem;
+      gap: 0.85rem;
+      padding: 0.75rem 1rem;
       border-radius: var(--radius-sm);
       color: var(--text-muted);
       cursor: pointer;
       font-weight: 600;
+      font-size: 0.9rem;
       transition: var(--transition);
     }
     .nav-item:hover { background: var(--bg-tertiary); color: var(--text-main); }
-    .nav-item.active { background: var(--accent-primary); color: #fff; box-shadow: 0 4px 12px var(--accent-glow); }
+    .nav-item.active { background: var(--accent-primary); color: #ffffff; box-shadow: 0 4px 12px var(--accent-glow); }
 
     .user-profile-widget {
       background: var(--bg-tertiary);
@@ -120,8 +119,8 @@
     .xp-bar-fill {
       height: 100%;
       background: linear-gradient(90deg, #6366f1, #a855f7);
-      width: 65%;
-      transition: width 0.3s ease;
+      width: 0%;
+      transition: width 0.4s ease;
     }
 
     #main-content {
@@ -129,11 +128,10 @@
       display: flex;
       flex-direction: column;
       overflow-y: auto;
-      position: relative;
     }
 
     .header-bar {
-      padding: 1.5rem 2rem;
+      padding: 1.25rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -144,13 +142,14 @@
       z-index: 90;
     }
 
-    .header-controls { display: flex; gap: 1rem; align-items: center; }
+    .header-controls { display: flex; gap: 0.75rem; align-items: center; }
 
     .btn {
-      padding: 0.6rem 1.2rem;
+      padding: 0.6rem 1.1rem;
       border-radius: var(--radius-sm);
       border: none;
       font-weight: 600;
+      font-size: 0.875rem;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -163,17 +162,17 @@
     .btn-secondary:hover { background: var(--border-color); }
 
     .view-container { padding: 2rem; display: none; }
-    .view-container.active { display: block; animation: fadeIn 0.3s ease; }
+    .view-container.active { display: block; animation: fadeIn 0.25s ease-out; }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Top Stats Bar */
+    /* Cards Estadísticas */
     .dashboard-hero {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1.25rem;
       margin-bottom: 2rem;
     }
@@ -186,15 +185,15 @@
       box-shadow: var(--shadow-sm);
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.35rem;
       position: relative;
       overflow: hidden;
     }
-    .stat-card .title { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-card .value { font-size: 1.75rem; font-weight: 800; color: var(--text-main); }
-    .stat-card .icon-bg { position: absolute; right: 10px; bottom: 10px; font-size: 2.5rem; opacity: 0.08; color: var(--text-main); }
+    .stat-card .title { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card .value { font-size: 1.65rem; font-weight: 800; color: var(--text-main); }
+    .stat-card .icon-bg { position: absolute; right: 12px; bottom: 12px; font-size: 2.2rem; opacity: 0.08; color: var(--text-main); }
 
-    /* Monthly Habit Grid - Custom Spreadsheet Look */
+    /* Matriz / Grilla de Hábitos */
     .grid-container {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -204,11 +203,7 @@
       margin-bottom: 2rem;
     }
 
-    .habit-grid {
-      display: grid;
-      border-collapse: collapse;
-      min-width: 900px;
-    }
+    .habit-grid { display: grid; border-collapse: collapse; min-width: 950px; }
 
     .grid-header-row {
       display: flex;
@@ -217,9 +212,10 @@
     }
 
     .habit-col-header {
-      width: 260px;
-      padding: 1rem;
+      width: 270px;
+      padding: 0.85rem 1rem;
       font-weight: 700;
+      font-size: 0.85rem;
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -228,7 +224,6 @@
     }
 
     .days-header-wrapper { display: flex; flex: 1; }
-
     .week-group { display: flex; border-right: 2px solid var(--border-color); }
     .week-group:last-child { border-right: none; }
 
@@ -242,40 +237,35 @@
       font-size: 0.75rem;
       border-right: 1px solid var(--border-color);
     }
-    .day-cell-header .day-name { color: var(--text-muted); font-weight: 600; }
-    .day-cell-header .day-num { font-weight: 800; margin-top: 2px; }
+    .day-cell-header .day-name { color: var(--text-muted); font-weight: 600; font-size: 0.68rem; }
+    .day-cell-header .day-num { font-weight: 700; margin-top: 1px; }
     .day-cell-header.today { background: var(--accent-glow); color: var(--accent-primary); }
 
-    .grid-row {
-      display: flex;
-      border-bottom: 1px solid var(--border-color);
-      transition: var(--transition);
-    }
-    .grid-row:hover { background: rgba(255,255,255,0.02); }
+    .grid-row { display: flex; border-bottom: 1px solid var(--border-color); transition: var(--transition); }
+    .grid-row:hover { background: rgba(255,255,255,0.015); }
 
     .habit-info-cell {
-      width: 260px;
-      padding: 0.75rem 1rem;
+      width: 270px;
+      padding: 0.65rem 1rem;
       flex-shrink: 0;
       display: flex;
       align-items: center;
       gap: 0.75rem;
       border-right: 1px solid var(--border-color);
-      cursor: pointer;
     }
     .habit-icon {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: white;
+      flex-shrink: 0;
     }
-    .habit-details { overflow: hidden; }
-    .habit-title { font-weight: 700; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .habit-category { font-size: 0.75rem; color: var(--text-muted); }
+    .habit-title { font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .habit-category { font-size: 0.725rem; color: var(--text-muted); }
 
     .habit-days-row { display: flex; flex: 1; }
 
@@ -289,29 +279,27 @@
       border-right: 1px solid var(--border-color);
       cursor: pointer;
       user-select: none;
-      transition: var(--transition);
     }
     .cell-checkbox:hover { background: var(--bg-tertiary); }
 
     .status-box {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border-radius: 6px;
       border: 2px solid var(--border-color);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.75rem;
-      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s;
+      font-size: 0.7rem;
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .status-box:active { transform: scale(0.85); }
-
+    .status-box:active { transform: scale(0.82); }
     .status-box.completed { background: var(--status-completed); border-color: var(--status-completed); color: white; }
     .status-box.skipped { background: var(--status-skipped); border-color: var(--status-skipped); color: white; }
     .status-box.rest { background: var(--status-rest); border-color: var(--status-rest); color: white; }
 
-    /* Compact Habit Cards Grid */
-    .section-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    /* Habit Cards */
+    .section-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; letter-spacing: -0.01em; }
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
     
     .habit-card {
@@ -321,47 +309,47 @@
       padding: 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      cursor: pointer;
+      gap: 0.85rem;
       transition: var(--transition);
     }
-    .habit-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--accent-primary); }
+    .habit-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent-primary); }
 
     .card-header { display: flex; justify-content: space-between; align-items: center; }
-    .card-stats-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); }
+    .card-stats-row { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); }
     
-    .progress-bar { height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; width: 100%; }
-    .progress-fill { height: 100%; background: var(--accent-primary); border-radius: 4px; transition: width 0.3s ease; }
+    .progress-bar { height: 7px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden; width: 100%; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
 
     /* Analytics Dashboard */
-    .analytics-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
+    .analytics-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.25rem; }
     .col-8 { grid-column: span 8; }
     .col-4 { grid-column: span 4; }
+    .col-6 { grid-column: span 6; }
     .col-12 { grid-column: span 12; }
 
     .analytics-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
-      padding: 1.5rem;
+      padding: 1.25rem;
     }
 
-    /* GitHub-style Heatmap */
+    /* Heatmap */
     .heatmap-container { display: flex; flex-direction: column; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
-    .heatmap-grid { display: grid; grid-template-rows: repeat(7, 14px); grid-auto-flow: column; grid-auto-columns: 14px; gap: 4px; }
-    .heatmap-cell { width: 14px; height: 14px; border-radius: 3px; background: var(--bg-tertiary); position: relative; }
+    .heatmap-grid { display: grid; grid-template-rows: repeat(7, 13px); grid-auto-flow: column; grid-auto-columns: 13px; gap: 4px; }
+    .heatmap-cell { width: 13px; height: 13px; border-radius: 2px; background: var(--bg-tertiary); }
     .heatmap-cell[data-level="1"] { background: rgba(16, 185, 129, 0.3); }
     .heatmap-cell[data-level="2"] { background: rgba(16, 185, 129, 0.5); }
-    .heatmap-cell[data-level="3"] { background: rgba(16, 185, 129, 0.8); }
+    .heatmap-cell[data-level="3"] { background: rgba(16, 185, 129, 0.75); }
     .heatmap-cell[data-level="4"] { background: rgba(16, 185, 129, 1); }
 
-    /* Tables */
-    .data-table { width: 100%; border-collapse: collapse; text-align: left; }
-    .data-table th, .data-table td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-color); }
-    .data-table th { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+    /* Tabla de Datos */
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem; }
+    .data-table th, .data-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); }
+    .data-table th { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; }
 
-    /* Achievements / Badges */
-    .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.25rem; }
+    /* Badges */
+    .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.25rem; }
     .badge-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -371,13 +359,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.75rem;
-      opacity: 0.5;
+      gap: 0.5rem;
+      opacity: 0.4;
       filter: grayscale(1);
       transition: var(--transition);
     }
     .badge-card.unlocked { opacity: 1; filter: grayscale(0); border-color: #f59e0b; }
-    .badge-icon { font-size: 2.5rem; background: var(--bg-tertiary); width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .badge-icon { font-size: 2rem; background: var(--bg-tertiary); width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
     /* Modal System */
     .modal-overlay {
@@ -400,34 +388,33 @@
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 500px;
-      padding: 2rem;
+      max-width: 460px;
+      padding: 1.75rem;
       box-shadow: var(--shadow-md);
-      transform: translateY(20px);
+      transform: translateY(12px);
       transition: var(--transition);
     }
     .modal-overlay.active .modal-content { transform: translateY(0); }
 
-    .form-group { margin-bottom: 1.25rem; }
-    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-muted); }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--text-muted); }
     .form-control {
       width: 100%;
-      padding: 0.75rem 1rem;
+      padding: 0.65rem 0.85rem;
       background: var(--bg-primary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
       color: var(--text-main);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
     .form-control:focus { outline: none; border-color: var(--accent-primary); }
 
-    /* Custom Responsive Adjustments */
     @media (max-width: 1024px) {
-      .col-8, .col-4 { grid-column: span 12; }
+      .col-8, .col-4, .col-6 { grid-column: span 12; }
       #sidebar { width: 70px; padding: 1rem 0.5rem; }
       .brand span, .nav-item span, .user-profile-widget .user-details { display: none; }
-      .nav-item { justify-content: center; padding: 1rem; }
-      --sidebar-width: 70px;
+      .nav-item { justify-content: center; padding: 0.85rem; }
+      :root { --sidebar-width: 70px; }
     }
   </style>
 </head>
@@ -442,30 +429,30 @@
     <ul class="nav-links">
       <li class="nav-item active" onclick="switchTab('dashboard', this)">
         <i class="fa-solid fa-chart-line"></i>
-        <span>Dashboard</span>
+        <span>Panel Principal</span>
       </li>
       <li class="nav-item" onclick="switchTab('weekly', this)">
         <i class="fa-solid fa-calendar-week"></i>
-        <span>Weekly View</span>
+        <span>Vista Semanal</span>
       </li>
       <li class="nav-item" onclick="switchTab('calendar', this)">
         <i class="fa-solid fa-calendar-days"></i>
-        <span>Heatmap</span>
+        <span>Mapa de Calor</span>
       </li>
       <li class="nav-item" onclick="switchTab('analytics', this)">
         <i class="fa-solid fa-chart-pie"></i>
-        <span>Analytics</span>
+        <span>Analíticas</span>
       </li>
       <li class="nav-item" onclick="switchTab('achievements', this)">
         <i class="fa-solid fa-trophy"></i>
-        <span>Gamification</span>
+        <span>Logros</span>
       </li>
     </ul>
 
     <div class="user-profile-widget">
       <div class="user-details" style="display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-weight: 700; font-size: 0.9rem;" id="user-level">Lvl 8 Champion</span>
-        <span style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700;" id="user-xp">2,840 XP</span>
+        <span style="font-weight: 700; font-size: 0.85rem;" id="user-level">Nivel 1</span>
+        <span style="font-size: 0.8rem; color: var(--accent-primary); font-weight: 700;" id="user-xp">0 XP</span>
       </div>
       <div class="xp-bar-container">
         <div class="xp-bar-fill" id="user-xp-fill"></div>
@@ -477,63 +464,62 @@
     
     <header class="header-bar">
       <div style="display: flex; align-items: center; gap: 1rem;">
-        <h1 style="font-size: 1.5rem; font-weight: 800;" id="current-view-title">Dashboard</h1>
-        <div style="display: flex; gap: 0.25rem; background: var(--bg-tertiary); padding: 4px; border-radius: var(--radius-sm);">
+        <h1 style="font-size: 1.35rem; font-weight: 800;" id="current-view-title">Panel Principal</h1>
+        <div style="display: flex; gap: 0.25rem; background: var(--bg-tertiary); padding: 3px; border-radius: var(--radius-sm);">
           <button class="btn btn-secondary" style="padding: 4px 8px;" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-          <span id="month-display" style="padding: 4px 12px; font-weight: 700; font-size: 0.9rem; align-self: center;">September 2026</span>
+          <span id="month-display" style="padding: 4px 10px; font-weight: 700; font-size: 0.85rem; align-self: center;">Septiembre 2026</span>
           <button class="btn btn-secondary" style="padding: 4px 8px;" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
       </div>
 
       <div class="header-controls">
-        <button class="btn btn-primary" onclick="openHabitModal()"><i class="fa-solid fa-plus"></i> Add Habit</button>
+        <button class="btn btn-primary" onclick="openHabitModal()"><i class="fa-solid fa-plus"></i> Nuevo Hábitos</button>
         <button class="btn btn-secondary" onclick="toggleTheme()" id="theme-toggle"><i class="fa-solid fa-moon"></i></button>
       </div>
     </header>
 
     <section id="dashboard" class="view-container active">
-      
       <div class="dashboard-hero">
         <div class="stat-card">
-          <span class="title">Monthly Completion</span>
+          <span class="title">Cumplimiento Mensual</span>
           <span class="value" id="stat-completion">0%</span>
           <i class="fa-solid fa-chart-line icon-bg"></i>
         </div>
         <div class="stat-card">
-          <span class="title">Current Streak</span>
-          <span class="value" style="color: #f59e0b;" id="stat-current-streak">0 Days 🔥</span>
+          <span class="title">Racha Actual</span>
+          <span class="value" style="color: #f59e0b;" id="stat-current-streak">0 Días 🔥</span>
           <i class="fa-solid fa-fire icon-bg"></i>
         </div>
         <div class="stat-card">
-          <span class="title">Best Streak</span>
-          <span class="value" id="stat-best-streak">0 Days 🏆</span>
+          <span class="title">Mejor Racha</span>
+          <span class="value" id="stat-best-streak">0 Días 🏆</span>
           <i class="fa-solid fa-award icon-bg"></i>
         </div>
         <div class="stat-card">
-          <span class="title">Habits Completed</span>
+          <span class="title">Total Completados</span>
           <span class="value" id="stat-total-completed">0 / 0</span>
           <i class="fa-solid fa-check-circle icon-bg"></i>
         </div>
       </div>
 
-      <div class="section-title"><i class="fa-solid fa-table-cells" style="color: var(--accent-primary);"></i> Habit Tracking Matrix</div>
+      <div class="section-title"><i class="fa-solid fa-table-cells" style="color: var(--accent-primary);"></i> Matriz de Seguimiento Mensual</div>
       <div class="grid-container">
         <div id="habit-matrix" class="habit-grid"></div>
       </div>
 
-      <div class="section-title"><i class="fa-solid fa-layer-group" style="color: var(--accent-primary);"></i> Active Habit Cards</div>
+      <div class="section-title"><i class="fa-solid fa-layer-group" style="color: var(--accent-primary);"></i> Hábitos Activos</div>
       <div class="cards-grid" id="habit-cards-container"></div>
     </section>
 
     <section id="weekly" class="view-container">
-      <div class="section-title"><i class="fa-solid fa-calendar-week"></i> Weekly Snapshot</div>
+      <div class="section-title"><i class="fa-solid fa-calendar-week"></i> Resumen de la Semana Actual</div>
       <div id="weekly-container" class="cards-grid"></div>
     </section>
 
     <section id="calendar" class="view-container">
       <div class="analytics-card" style="margin-bottom: 2rem;">
-        <div class="section-title"><i class="fa-solid fa-square-poll-vertical"></i> Annual Consistency Matrix</div>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Visual representation of daily completed goals across the current calendar year.</p>
+        <div class="section-title"><i class="fa-solid fa-square-poll-vertical"></i> Registro Anual de Consistencia</div>
+        <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 0.85rem;">Visualización de actividad diaria acumulada a lo largo del año.</p>
         <div class="heatmap-container">
           <div class="heatmap-grid" id="heatmap-grid"></div>
         </div>
@@ -543,42 +529,42 @@
     <section id="analytics" class="view-container">
       <div class="analytics-grid">
         <div class="analytics-card col-8">
-          <div class="section-title">Daily Completion Trend</div>
-          <canvas id="dailyChart" height="140"></canvas>
+          <div class="section-title">Completados por Día</div>
+          <canvas id="dailyChart" height="130"></canvas>
         </div>
         <div class="analytics-card col-4">
-          <div class="section-title">Monthly Goal Overview</div>
+          <div class="section-title">Meta del Mes</div>
           <canvas id="donutChart"></canvas>
         </div>
         <div class="analytics-card col-12">
-          <div class="section-title">Habit Performance Ledger</div>
+          <div class="section-title">Rendimiento por Hábitos</div>
           <table class="data-table">
             <thead>
               <tr>
-                <th>Habit</th>
-                <th>Goal</th>
-                <th>Actual</th>
-                <th>Remaining</th>
-                <th>Progress</th>
-                <th>Rate</th>
+                <th>Hábito</th>
+                <th>Meta</th>
+                <th>Real</th>
+                <th>Restantes</th>
+                <th>Progreso</th>
+                <th>Tasa</th>
               </tr>
             </thead>
             <tbody id="analytics-table-body"></tbody>
           </table>
         </div>
         <div class="analytics-card col-6">
-          <div class="section-title" style="color: #10b981;"><i class="fa-solid fa-arrow-trend-up"></i> Top Performing Habits</div>
+          <div class="section-title" style="color: #10b981;"><i class="fa-solid fa-arrow-trend-up"></i> Hábitos Destacados</div>
           <div id="top-habits-list"></div>
         </div>
         <div class="analytics-card col-6">
-          <div class="section-title" style="color: #f43f5e;"><i class="fa-solid fa-triangle-exclamation"></i> Weakest Habits & Recommendations</div>
+          <div class="section-title" style="color: #f43f5e;"><i class="fa-solid fa-triangle-exclamation"></i> Áreas de Mejora</div>
           <div id="weak-habits-list"></div>
         </div>
       </div>
     </section>
 
     <section id="achievements" class="view-container">
-      <div class="section-title"><i class="fa-solid fa-medal"></i> Unlocked Badges & Milestones</div>
+      <div class="section-title"><i class="fa-solid fa-medal"></i> Insignias y Logros</div>
       <div class="badge-grid" id="badge-grid"></div>
     </section>
 
@@ -586,90 +572,87 @@
 
   <div class="modal-overlay" id="habit-modal">
     <div class="modal-content">
-      <h2 style="margin-bottom: 1.5rem; font-size: 1.25rem;">Create New Habit</h2>
+      <h2 style="margin-bottom: 1.25rem; font-size: 1.15rem; font-weight: 800;">Crear Nuevo Hábito</h2>
       <form id="habit-form" onsubmit="saveHabit(event)">
         <div class="form-group">
-          <label>Habit Name</label>
-          <input type="text" id="habit-name" class="form-control" placeholder="e.g. Morning Workout" required>
+          <label>Nombre del Hábito</label>
+          <input type="text" id="habit-name" class="form-control" placeholder="Ej: Meditación Mañanera" required>
         </div>
-        <div style="display: flex; gap: 1rem;">
+        <div style="display: flex; gap: 0.75rem;">
           <div class="form-group" style="flex:1;">
-            <label>Icon (Font Awesome Class)</label>
-            <input type="text" id="habit-icon" class="form-control" value="fa-dumbbell" required>
+            <label>Icono (Font Awesome)</label>
+            <select id="habit-icon" class="form-control">
+              <option value="fa-brain">🧠 Mente</option>
+              <option value="fa-dumbbell">🏋️ Fitness</option>
+              <option value="fa-book-open">📖 Lectura</option>
+              <option value="fa-laptop-code">💻 Trabajo</option>
+              <option value="fa-glass-water">💧 Agua</option>
+              <option value="fa-bed">😴 Sueño</option>
+            </select>
           </div>
           <div class="form-group" style="flex:1;">
-            <label>Category</label>
+            <label>Categoría</label>
             <select id="habit-category" class="form-control">
-              <option>Health</option>
+              <option>Salud</option>
               <option>Fitness</option>
-              <option>Study</option>
-              <option>Productivity</option>
+              <option>Estudio</option>
+              <option>Productividad</option>
               <option>Personal</option>
             </select>
           </div>
         </div>
-        <div style="display: flex; gap: 1rem;">
+        <div style="display: flex; gap: 0.75rem;">
           <div class="form-group" style="flex:1;">
             <label>Color</label>
-            <input type="color" id="habit-color" class="form-control" value="#6366f1" style="height: 42px; padding: 4px;">
+            <input type="color" id="habit-color" class="form-control" value="#6366f1" style="height: 38px; padding: 2px;">
           </div>
           <div class="form-group" style="flex:1;">
-            <label>XP Reward</label>
+            <label>Recompensa (XP)</label>
             <input type="number" id="habit-xp" class="form-control" value="50" min="10" step="10">
           </div>
         </div>
-        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
-          <button type="button" class="btn btn-secondary" onclick="closeHabitModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Habit</button>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeHabitModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Hábito</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    // Global Application State
-    let currentDate = new Date(2026, 8, 1); // Default to Sept 2026 per current frame context
-    let userProfile = { xp: 2840, level: 8 };
+    // Estado Global de la Aplicación
+    let currentDate = new Date(2026, 8, 1); // Septiembre 2026 por defecto
+    let userProfile = JSON.parse(localStorage.getItem('aether_user')) || { xp: 0, level: 1 };
 
-    // Initial Realistic Demo Data Structure
-    let habits = [
-      { id: '1', name: 'Morning Meditation', icon: 'fa-brain', category: 'Health', color: '#8b5cf6', xp: 50, records: {} },
-      { id: '2', name: '30-Min Workout', icon: 'fa-dumbbell', category: 'Fitness', color: '#ef4444', xp: 100, records: {} },
-      { id: '3', name: 'Read 20 Pages', icon: 'fa-book-open', category: 'Study', color: '#10b981', xp: 40, records: {} },
-      { id: '4', name: 'Deep Work (2 Hours)', icon: 'fa-laptop-code', category: 'Productivity', color: '#3b82f6', xp: 80, records: {} },
-      { id: '5', name: 'Drink 3L Water', icon: 'fa-glass-water', category: 'Health', color: '#06b6d4', xp: 30, records: {} }
+    let defaultHabits = [
+      { id: '1', name: 'Meditación Mañanera', icon: 'fa-brain', category: 'Salud', color: '#8b5cf6', xp: 50, records: {} },
+      { id: '2', name: 'Rutina de Ejercicio', icon: 'fa-dumbbell', category: 'Fitness', color: '#ef4444', xp: 100, records: {} },
+      { id: '3', name: 'Leer 20 Páginas', icon: 'fa-book-open', category: 'Estudio', color: '#10b981', xp: 40, records: {} },
+      { id: '4', name: 'Trabajo Enfocado (2h)', icon: 'fa-laptop-code', category: 'Productivity', color: '#3b82f6', xp: 80, records: {} }
     ];
 
+    let habits = JSON.parse(localStorage.getItem('aether_habits')) || defaultHabits;
+
     const badges = [
-      { id: 'b1', title: 'First Step', desc: 'Complete your first habit entry', icon: 'fa-shoe-prints', condition: (stats) => stats.totalCompleted >= 1 },
-      { id: 'b2', title: '7 Day Streak', desc: 'Maintain a 7-day completion streak', icon: 'fa-fire', condition: (stats) => stats.currentStreak >= 7 },
-      { id: 'b3', title: 'Consistency Master', desc: 'Complete 50 habit entries total', icon: 'fa-crown', condition: (stats) => stats.totalCompleted >= 50 },
-      { id: 'b4', title: 'Century Club', desc: 'Reach 100 overall completions', icon: 'fa-bolt', condition: (stats) => stats.totalCompleted >= 100 }
+      { id: 'b1', title: 'Primer Paso', desc: 'Completa tu primer hábito', icon: 'fa-shoe-prints', condition: (s) => s.totalCompleted >= 1 },
+      { id: 'b2', title: 'Racha de 7 Días', desc: 'Mantén una racha constante', icon: 'fa-fire', condition: (s) => s.currentStreak >= 7 },
+      { id: 'b3', title: 'Maestro de la Constancia', desc: 'Suma 50 hábitos completados', icon: 'fa-crown', condition: (s) => s.totalCompleted >= 50 },
+      { id: 'b4', title: 'Club de los 100', desc: 'Alcanza 100 metas completadas', icon: 'fa-bolt', condition: (s) => s.totalCompleted >= 100 }
     ];
 
     let dailyChartInstance = null;
     let donutChartInstance = null;
 
-    // Seed Demo Record Data for Sept 2026
-    function seedDemoData() {
-      const daysInMonth = new Date(2026, 9, 0).getDate();
-      habits.forEach(h => {
-        for (let d = 1; d <= daysInMonth; d++) {
-          if (d <= 4) { // Up to current date Sept 4
-            const rand = Math.random();
-            if (rand > 0.2) h.records[`2026-8-${d}`] = 'completed';
-            else if (rand > 0.1) h.records[`2026-8-${d}`] = 'rest';
-            else h.records[`2026-8-${d}`] = 'skipped';
-          }
-        }
-      });
-    }
-
-    // App Initialization
+    // Inicialización de la Aplicación
     window.addEventListener('DOMContentLoaded', () => {
-      seedDemoData();
+      saveState();
       renderAll();
     });
+
+    function saveState() {
+      localStorage.setItem('aether_habits', JSON.stringify(habits));
+      localStorage.setItem('aether_user', JSON.stringify(userProfile));
+    }
 
     function renderAll() {
       renderHeader();
@@ -682,7 +665,6 @@
       updateUserProfileUI();
     }
 
-    // Navigation Tabs Switcher
     function switchTab(tabId, element) {
       document.querySelectorAll('.view-container').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -691,11 +673,11 @@
       element.classList.add('active');
       
       const titles = {
-        'dashboard': 'Dashboard',
-        'weekly': 'Weekly View',
-        'calendar': 'Consistency Heatmap',
-        'analytics': 'Analytics & Performance',
-        'achievements': 'Gamification & Badges'
+        'dashboard': 'Panel Principal',
+        'weekly': 'Vista Semanal',
+        'calendar': 'Mapa de Calor de Consistencia',
+        'analytics': 'Analíticas de Rendimiento',
+        'achievements': 'Gamificación y Logros'
       };
       document.getElementById('current-view-title').innerText = titles[tabId];
 
@@ -708,11 +690,11 @@
     }
 
     function renderHeader() {
-      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
       document.getElementById('month-display').innerText = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
     }
 
-    // RENDER MAIN SPREADSHEET MATRIX
+    /* MATRIZ MENSUAL ESTILO SPREADSHEET */
     function renderMatrix() {
       const container = document.getElementById('habit-matrix');
       container.innerHTML = '';
@@ -721,24 +703,21 @@
       const month = currentDate.getMonth();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-      // Grid Header Row Construction
       let headerHTML = `
         <div class="grid-header-row">
           <div class="habit-col-header">
-            <span>Habits</span>
+            <span>Hábitos</span>
             <span style="font-size:0.75rem; color:var(--text-muted);">${habits.length} Total</span>
           </div>
           <div class="days-header-wrapper">
       `;
 
       let dayCounter = 1;
-      let weekNum = 1;
-
       while (dayCounter <= daysInMonth) {
         headerHTML += `<div class="week-group">`;
         for (let i = 0; i < 7 && dayCounter <= daysInMonth; i++) {
           const dateObj = new Date(year, month, dayCounter);
-          const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'narrow' });
+          const dayName = dateObj.toLocaleDateString('es-ES', { weekday: 'narrow' }).toUpperCase();
           const isToday = dayCounter === 4 && month === 8 && year === 2026;
 
           headerHTML += `
@@ -750,11 +729,9 @@
           dayCounter++;
         }
         headerHTML += `</div>`;
-        weekNum++;
       }
       headerHTML += `</div></div>`;
 
-      // Rows Construction
       let rowsHTML = '';
       habits.forEach(habit => {
         rowsHTML += `
@@ -763,7 +740,7 @@
               <div class="habit-icon" style="background:${habit.color};">
                 <i class="fa-solid ${habit.icon}"></i>
               </div>
-              <div class="habit-details">
+              <div style="overflow:hidden;">
                 <div class="habit-title">${habit.name}</div>
                 <div class="habit-category">${habit.category}</div>
               </div>
@@ -775,15 +752,15 @@
         while (dCount <= daysInMonth) {
           rowsHTML += `<div class="week-group">`;
           for (let i = 0; i < 7 && dCount <= daysInMonth; i++) {
-            const key = `${year}-${month}-${dCount}`;
-            const status = habit.records[key] || 'empty';
+            const dateKey = `${year}-${month}-${dCount}`;
+            const status = habit.records[dateKey] || 'empty';
             let iconInner = '';
             if (status === 'completed') iconInner = '<i class="fa-solid fa-check"></i>';
             if (status === 'skipped') iconInner = '<i class="fa-solid fa-xmark"></i>';
             if (status === 'rest') iconInner = '<i class="fa-solid fa-mug-hot"></i>';
 
             rowsHTML += `
-              <div class="cell-checkbox" onclick="toggleHabitStatus('${habit.id}', '${key}')">
+              <div class="cell-checkbox" onclick="toggleHabitStatus('${habit.id}', '${dateKey}')">
                 <div class="status-box ${status}">${iconInner}</div>
               </div>
             `;
@@ -798,37 +775,36 @@
       calculateGlobalStats();
     }
 
-    // Toggle Cell States: empty -> completed -> skipped -> rest -> empty
     function toggleHabitStatus(habitId, dateKey) {
       const habit = habits.find(h => h.id === habitId);
       if (!habit) return;
 
       const currentState = habit.records[dateKey] || 'empty';
-      const stateCycle = { 'empty': 'completed', 'completed': 'skipped', 'skipped': 'rest', 'rest': 'empty' };
-      const newState = stateCycle[currentState];
+      const cycle = { 'empty': 'completed', 'completed': 'skipped', 'skipped': 'rest', 'rest': 'empty' };
+      const newState = cycle[currentState];
 
       if (newState === 'empty') delete habit.records[dateKey];
       else habit.records[dateKey] = newState;
 
-      // Gamification Awarding
       if (newState === 'completed') {
-        addXP(habit.xp);
-        confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 } });
+        addXP(habit.xp || 50);
+        confetti({ particleCount: 25, spread: 50, origin: { y: 0.85 } });
       }
 
+      saveState();
       renderAll();
     }
 
     function addXP(amount) {
       userProfile.xp += amount;
-      userProfile.level = Math.floor(userProfile.xp / 400) + 1;
+      userProfile.level = Math.floor(userProfile.xp / 300) + 1;
       updateUserProfileUI();
     }
 
     function updateUserProfileUI() {
       document.getElementById('user-xp').innerText = `${userProfile.xp} XP`;
-      document.getElementById('user-level').innerText = `Lvl ${userProfile.level} Champion`;
-      const fillPercentage = ((userProfile.xp % 400) / 400) * 100;
+      document.getElementById('user-level').innerText = `Nivel ${userProfile.level}`;
+      const fillPercentage = ((userProfile.xp % 300) / 300) * 100;
       document.getElementById('user-xp-fill').style.width = `${fillPercentage}%`;
     }
 
@@ -849,11 +825,11 @@
 
       document.getElementById('stat-completion').innerText = `${percentage}%`;
       document.getElementById('stat-total-completed').innerText = `${totalCompleted} / ${totalPossible}`;
-      document.getElementById('stat-current-streak').innerText = `4 Days 🔥`;
-      document.getElementById('stat-best-streak').innerText = `12 Days 🏆`;
+      document.getElementById('stat-current-streak').innerText = `4 Días 🔥`;
+      document.getElementById('stat-best-streak').innerText = `12 Días 🏆`;
     }
 
-    // RENDER HABIT CARDS
+    /* CARDS DE HÁBITOS */
     function renderCards() {
       const container = document.getElementById('habit-cards-container');
       container.innerHTML = '';
@@ -880,33 +856,33 @@
                   <div class="habit-category">${habit.category}</div>
                 </div>
               </div>
-              <span style="font-weight:800; color:var(--accent-primary);">${pct}%</span>
+              <span style="font-weight:800; color:var(--accent-primary); font-size: 0.9rem;">${pct}%</span>
             </div>
             <div class="progress-bar">
               <div class="progress-fill" style="width: ${pct}%; background: ${habit.color};"></div>
             </div>
             <div class="card-stats-row">
-              <span>Completed: <b>${completedDays}/${daysInMonth}</b></span>
-              <span>Streak: <b>4d 🔥</b></span>
+              <span>Completado: <b>${completedDays}/${daysInMonth}</b></span>
+              <span>Racha: <b>4d 🔥</b></span>
             </div>
           </div>
         `;
       });
     }
 
-    // RENDER WEEKLY DASHBOARD
+    /* VISTA SEMANAL */
     function renderWeeklyView() {
       const container = document.getElementById('weekly-container');
       container.innerHTML = '';
       
+      const weekDays = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
       habits.forEach(habit => {
         let daysHTML = '';
-        const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-        for(let d=1; d<=7; d++) {
+        for(let d = 1; d <= 7; d++) {
           const status = habit.records[`2026-8-${d}`] || 'empty';
           daysHTML += `
             <div style="text-align:center;">
-              <div style="font-size:0.7rem; color:var(--text-muted);">${weekDays[d-1]}</div>
+              <div style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">${weekDays[d-1]}</div>
               <div class="status-box ${status}" style="margin-top:4px;">
                 ${status === 'completed' ? '<i class="fa-solid fa-check"></i>' : ''}
               </div>
@@ -920,7 +896,7 @@
               <div class="habit-icon" style="background:${habit.color};"><i class="fa-solid ${habit.icon}"></i></div>
               <div class="habit-title">${habit.name}</div>
             </div>
-            <div style="display:flex; justify-between; gap:0.5rem; justify-content: space-around;">
+            <div style="display:flex; justify-content: space-around; gap:0.25rem;">
               ${daysHTML}
             </div>
           </div>
@@ -928,24 +904,22 @@
       });
     }
 
-    // RENDER GITHUB-STYLE HEATMAP
+    /* HEATMAP */
     function renderHeatmap() {
       const container = document.getElementById('heatmap-grid');
       container.innerHTML = '';
-
       for (let i = 0; i < 364; i++) {
-        const level = Math.floor(Math.random() * 5); // Simulated activity levels
-        container.innerHTML += `<div class="heatmap-cell" data-level="${level}" title="Day ${i+1}: ${level * 2} habits completed"></div>`;
+        const level = (i % 7 === 0 || i % 5 === 0) ? Math.floor(Math.random() * 4) + 1 : 0;
+        container.innerHTML += `<div class="heatmap-cell" data-level="${level}"></div>`;
       }
     }
 
-    // RENDER ANALYTICS & CHARTS
+    /* ANALÍTICAS */
     function renderAnalytics() {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-      // Daily Completions Bar Chart Data
       const labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
       const dataPoints = labels.map(day => {
         let count = 0;
@@ -961,28 +935,26 @@
         type: 'bar',
         data: {
           labels: labels,
-          datasets: [{ label: 'Completed Habits', data: dataPoints, backgroundColor: '#6366f1', borderRadius: 4 }]
+          datasets: [{ label: 'Completados', data: dataPoints, backgroundColor: '#6366f1', borderRadius: 4 }]
         },
         options: { responsive: true, plugins: { legend: { display: false } } }
       });
 
-      // Donut Chart
       let completedTotal = dataPoints.reduce((a, b) => a + b, 0);
       let totalGoals = habits.length * daysInMonth;
-      let remaining = totalGoals - completedTotal;
+      let remaining = Math.max(0, totalGoals - completedTotal);
 
       if (donutChartInstance) donutChartInstance.destroy();
       const ctx2 = document.getElementById('donutChart').getContext('2d');
       donutChartInstance = new Chart(ctx2, {
         type: 'doughnut',
         data: {
-          labels: ['Completed', 'Remaining'],
+          labels: ['Completados', 'Restantes'],
           datasets: [{ data: [completedTotal, remaining], backgroundColor: ['#10b981', '#334155'] }]
         },
         options: { responsive: true }
       });
 
-      // Table & Performance Lists
       const tableBody = document.getElementById('analytics-table-body');
       const topList = document.getElementById('top-habits-list');
       const weakList = document.getElementById('weak-habits-list');
@@ -1017,9 +989,9 @@
 
       rankedHabits.slice(0, 3).forEach(h => {
         topList.innerHTML += `
-          <div style="display:flex; justify-between; align-items:center; padding: 0.5rem 0; border-bottom:1px solid var(--border-color);">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 0.5rem 0; border-bottom:1px solid var(--border-color);">
             <span><i class="fa-solid ${h.icon}" style="color:${h.color}; margin-right:8px;"></i> ${h.name}</span>
-            <span style="font-weight:800; color:#10b981;">${h.rate}% Rate</span>
+            <span style="font-weight:800; color:#10b981;">${h.rate}% Tasa</span>
           </div>
         `;
       });
@@ -1027,17 +999,16 @@
       rankedHabits.slice(-2).reverse().forEach(h => {
         weakList.innerHTML += `
           <div style="padding: 0.5rem 0; border-bottom:1px solid var(--border-color);">
-            <div style="display:flex; justify-between; align-items:center;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
               <span><i class="fa-solid ${h.icon}" style="color:${h.color}; margin-right:8px;"></i> ${h.name}</span>
-              <span style="font-weight:800; color:#f43f5e;">${h.rate}% Rate</span>
+              <span style="font-weight:800; color:#f43f5e;">${h.rate}% Tasa</span>
             </div>
-            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Tip: Try setting reminders or reducing friction!</p>
           </div>
         `;
       });
     }
 
-    // BADGES SYSTEM
+    /* LOGROS */
     function renderBadges() {
       const container = document.getElementById('badge-grid');
       container.innerHTML = '';
@@ -1054,14 +1025,14 @@
         container.innerHTML += `
           <div class="badge-card ${unlocked ? 'unlocked' : ''}">
             <div class="badge-icon"><i class="fa-solid ${b.icon}"></i></div>
-            <div style="font-weight:700;">${b.title}</div>
+            <div style="font-weight:700; font-size: 0.9rem;">${b.title}</div>
             <div style="font-size:0.75rem; color:var(--text-muted);">${b.desc}</div>
           </div>
         `;
       });
     }
 
-    // MODAL ACTIONS
+    /* ACCIONES DE MODAL */
     function openHabitModal() { document.getElementById('habit-modal').classList.add('active'); }
     function closeHabitModal() { document.getElementById('habit-modal').classList.remove('active'); }
 
@@ -1073,26 +1044,17 @@
       const color = document.getElementById('habit-color').value;
       const xp = parseInt(document.getElementById('habit-xp').value) || 50;
 
-      habits.push({
-        id: Date.now().toString(),
-        name,
-        icon,
-        category,
-        color,
-        xp,
-        records: {}
-      });
+      habits.push({ id: Date.now().toString(), name, icon, category, color, xp, records: {} });
 
+      saveState();
       closeHabitModal();
       document.getElementById('habit-form').reset();
       renderAll();
     }
 
-    // THEME TOGGLE
     function toggleTheme() {
       const html = document.documentElement;
-      const current = html.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       html.setAttribute('data-theme', next);
       document.getElementById('theme-toggle').innerHTML = next === 'dark' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
     }
