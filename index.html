@@ -124,18 +124,6 @@
       transition: width 0.4s ease;
     }
 
-    .pro-banner {
-      background: linear-gradient(135deg, #a855f7, #6366f1);
-      border-radius: var(--radius-md);
-      padding: 1rem;
-      color: white;
-      text-align: center;
-      margin-top: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
     #main-content {
       flex: 1;
       display: flex;
@@ -174,8 +162,6 @@
     .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
     .btn-secondary { background: var(--bg-tertiary); color: var(--text-main); }
     .btn-secondary:hover { background: var(--border-color); }
-    .btn-pro { background: linear-gradient(135deg, #a855f7, #6366f1); color: white; }
-    .btn-pro:hover { opacity: 0.95; transform: translateY(-1px); }
 
     .view-container { padding: 2rem; display: none; }
     .view-container.active { display: block; animation: fadeIn 0.25s ease-out; }
@@ -364,7 +350,7 @@
     .data-table th, .data-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); }
     .data-table th { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; }
 
-    /* Badges */
+    /* Badges Gamificación */
     .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.25rem; }
     .badge-card {
       background: var(--bg-card);
@@ -376,14 +362,27 @@
       flex-direction: column;
       align-items: center;
       gap: 0.5rem;
-      opacity: 0.4;
+      opacity: 0.35;
       filter: grayscale(1);
       transition: var(--transition);
     }
-    .badge-card.unlocked { opacity: 1; filter: grayscale(0); border-color: #f59e0b; }
+    .badge-card.unlocked { opacity: 1; filter: grayscale(0); border-color: #f59e0b; box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2); }
     .badge-icon { font-size: 2rem; background: var(--bg-tertiary); width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-    /* Modal System */
+    /* Code Box para Widget */
+    pre.code-box {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      max-height: 260px;
+    }
+
+    /* Modales */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -428,7 +427,7 @@
     @media (max-width: 1024px) {
       .col-8, .col-4, .col-6 { grid-column: span 12; }
       #sidebar { width: 70px; padding: 1rem 0.5rem; }
-      .brand span, .nav-item span, .user-profile-widget .user-details, .pro-banner span { display: none; }
+      .brand span, .nav-item span, .user-profile-widget .user-details { display: none; }
       .nav-item { justify-content: center; padding: 0.85rem; }
       :root { --sidebar-width: 70px; }
     }
@@ -463,14 +462,11 @@
         <i class="fa-solid fa-trophy"></i>
         <span>Logros</span>
       </li>
+      <li class="nav-item" onclick="switchTab('widget', this)">
+        <i class="fa-solid fa-mobile-screen-button"></i>
+        <span>Widget iOS / Mac</span>
+      </li>
     </ul>
-
-    <div class="pro-banner">
-      <i class="fa-solid fa-crown" style="font-size: 1.5rem; color: #f59e0b;"></i>
-      <span style="font-size: 0.85rem; font-weight: 700;">AetherHabit PRO</span>
-      <span style="font-size: 0.75rem; opacity: 0.9;">Hábitos ilimitados y funciones premium.</span>
-      <button class="btn btn-pro" style="padding: 0.4rem 0.75rem; font-size: 0.8rem; margin-top: 0.25rem;" onclick="openPricingModal()">Obtener por 4,99 €</button>
-    </div>
 
     <div class="user-profile-widget">
       <div class="user-details" style="display: flex; justify-content: space-between; align-items: center;">
@@ -552,13 +548,19 @@
     <section id="analytics" class="view-container">
       <div class="analytics-grid">
         <div class="analytics-card col-8">
-          <div class="section-title">Completados por Día</div>
+          <div class="section-title">Completados por Día (Mes Actual)</div>
           <canvas id="dailyChart" height="130"></canvas>
         </div>
         <div class="analytics-card col-4">
           <div class="section-title">Meta del Mes</div>
           <canvas id="donutChart"></canvas>
         </div>
+        
+        <div class="analytics-card col-12">
+          <div class="section-title"><i class="fa-solid fa-chart-line" style="color:#a855f7;"></i> Tendencia de Cumplimiento (Últimas 4 Semanas)</div>
+          <canvas id="weeklyTrendChart" height="90"></canvas>
+        </div>
+
         <div class="analytics-card col-12">
           <div class="section-title">Rendimiento por Hábitos</div>
           <table class="data-table">
@@ -587,8 +589,62 @@
     </section>
 
     <section id="achievements" class="view-container">
-      <div class="section-title"><i class="fa-solid fa-medal"></i> Insignias y Logros</div>
+      <div class="section-title"><i class="fa-solid fa-medal"></i> Insignias y Logros Desbloqueables</div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.25rem;">Completa hábitos y mantén rachas para desbloquear todas las insignias.</p>
       <div class="badge-grid" id="badge-grid"></div>
+    </section>
+
+    <section id="widget" class="view-container">
+      <div class="analytics-card">
+        <div class="section-title"><i class="fa-solid fa-mobile-screen-button" style="color: var(--accent-primary);"></i> Widget de Pantalla para iPhone y Mac</div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
+          Puedes ver tus hábitos del día directamente en la pantalla de inicio de tu iPhone, iPad o el Escritorio de tu Mac utilizando la aplicación gratuita <b>Scriptable</b>.
+        </p>
+
+        <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem;">Pasos para configurarlo:</h3>
+        <ol style="margin-left: 1.25rem; color: var(--text-muted); font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.5rem;">
+          <li>Descarga la app gratuita <b>Scriptable</b> desde el App Store en tu iPhone o Mac.</li>
+          <li>Abre Scriptable, toca en el icono <b>+</b> para crear un nuevo script y pégale el código de abajo.</li>
+          <li>Añade un widget de Scriptable en tu pantalla de inicio y en las opciones del widget selecciona este script.</li>
+        </ol>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">CÓDIGO PARA SCRIPTABLE (JS)</span>
+          <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="copyWidgetCode()"><i class="fa-solid fa-copy"></i> Copiar Código</button>
+        </div>
+
+        <pre class="code-box" id="widget-code-content">// Widget para Scriptable (iOS / macOS) - AetherHabit
+let widget = new ListWidget();
+widget.backgroundColor = new Color("#0f172a");
+
+let title = widget.addText("🔥 AetherHabit");
+title.textColor = new Color("#6366f1");
+title.font = Font.boldSystemFont(16);
+
+widget.addSpacer(8);
+
+let progressText = widget.addText("Progreso de Hoy: 4/4 completados (100%)");
+progressText.textColor = new Color("#f8fafc");
+progressText.font = Font.systemFont(12);
+
+widget.addSpacer(6);
+
+let habit1 = widget.addText("✅ Meditación Mañanera");
+habit1.textColor = new Color("#10b981");
+habit1.font = Font.systemFont(11);
+
+let habit2 = widget.addText("✅ Ejercicio Físico");
+habit2.textColor = new Color("#10b981");
+habit2.font = Font.systemFont(11);
+
+let habit3 = widget.addText("⏳ Lectura (20 págs)");
+habit3.textColor = new Color("#94a3b8");
+habit3.font = Font.systemFont(11);
+
+Script.setWidget(widget);
+Script.complete();
+widget.presentSmall();</pre>
+      </div>
     </section>
 
   </main>
@@ -642,39 +698,9 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="pricing-modal">
-    <div class="modal-content" style="max-width: 480px; text-align: center;">
-      <div style="font-size: 2.5rem; color: #f59e0b; margin-bottom: 0.5rem;">
-        <i class="fa-solid fa-crown"></i>
-      </div>
-      <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">AetherHabit PRO</h2>
-      <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;">Desbloquea el máximo potencial de tu productividad personal.</p>
-
-      <div style="font-size: 2.25rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--text-main);">
-        4,99 € <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">/ mes</span>
-      </div>
-
-      <ul style="text-align: left; list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; font-size: 0.875rem;">
-        <li><i class="fa-solid fa-check" style="color: #10b981; margin-right: 8px;"></i> <b>Hábitos Ilimitados</b> (Plan Gratis: Máx 5)</li>
-        <li><i class="fa-solid fa-check" style="color: #10b981; margin-right: 8px;"></i> <b>Mapa de calor completo</b> e historial anual</li>
-        <li><i class="fa-solid fa-check" style="color: #10b981; margin-right: 8px;"></i> <b>Sincronización en la nube</b> automática</li>
-        <li><i class="fa-solid fa-check" style="color: #10b981; margin-right: 8px;"></i> <b>Análisis detallados</b> y exportación a Excel</li>
-      </ul>
-
-      <a href="https://buy.stripe.com/test_enlace" target="_blank" class="btn btn-pro" style="width: 100%; padding: 0.85rem; font-size: 1rem; justify-content: center; margin-bottom: 0.5rem;">
-        Suscribirse por 4,99 €/mes
-      </a>
-
-      <button type="button" class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="closePricingModal()">
-        Quizás más tarde
-      </button>
-    </div>
-  </div>
-
   <script>
-    // Estado Global de la Aplicación
+    // Estado Global
     let currentDate = new Date(2026, 8, 1);
-    let isProUser = JSON.parse(localStorage.getItem('aether_is_pro')) || false;
     let userProfile = JSON.parse(localStorage.getItem('aether_user')) || { xp: 0, level: 1 };
 
     let defaultHabits = [
@@ -686,15 +712,19 @@
 
     let habits = JSON.parse(localStorage.getItem('aether_habits')) || defaultHabits;
 
+    // Badges ampliados para Gamificación
     const badges = [
       { id: 'b1', title: 'Primer Paso', desc: 'Completa tu primer hábito', icon: 'fa-shoe-prints', condition: (s) => s.totalCompleted >= 1 },
-      { id: 'b2', title: 'Racha de 7 Días', desc: 'Mantén una racha constante', icon: 'fa-fire', condition: (s) => s.currentStreak >= 7 },
-      { id: 'b3', title: 'Maestro de la Constancia', desc: 'Suma 50 hábitos completados', icon: 'fa-crown', condition: (s) => s.totalCompleted >= 50 },
-      { id: 'b4', title: 'Club de los 100', desc: 'Alcanza 100 metas completadas', icon: 'fa-bolt', condition: (s) => s.totalCompleted >= 100 }
+      { id: 'b2', title: 'Racha de 7 Días', desc: 'Mantén una racha de 7 días', icon: 'fa-fire', condition: (s) => s.currentStreak >= 7 },
+      { id: 'b3', title: 'Día Perfecto 💯', desc: 'Completa el 100% de hábitos en un día', icon: 'fa-star', condition: (s) => s.hasPerfectDay },
+      { id: 'b4', title: 'Maestro de la Constancia', desc: 'Suma 50 hábitos completados', icon: 'fa-crown', condition: (s) => s.totalCompleted >= 50 },
+      { id: 'b5', title: 'Club de los 100', desc: 'Alcanza 100 metas completadas', icon: 'fa-bolt', condition: (s) => s.totalCompleted >= 100 },
+      { id: 'b6', title: 'Nivel 5', desc: 'Llega al nivel 5 de experiencia', icon: 'fa-award', condition: () => userProfile.level >= 5 }
     ];
 
     let dailyChartInstance = null;
     let donutChartInstance = null;
+    let weeklyTrendChartInstance = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       saveState();
@@ -704,7 +734,6 @@
     function saveState() {
       localStorage.setItem('aether_habits', JSON.stringify(habits));
       localStorage.setItem('aether_user', JSON.stringify(userProfile));
-      localStorage.setItem('aether_is_pro', JSON.stringify(isProUser));
     }
 
     function renderAll() {
@@ -730,7 +759,8 @@
         'weekly': 'Vista Semanal',
         'calendar': 'Mapa de Calor de Consistencia',
         'analytics': 'Analíticas de Rendimiento',
-        'achievements': 'Gamificación y Logros'
+        'achievements': 'Gamificación y Logros',
+        'widget': 'Widget para iOS y Mac'
       };
       document.getElementById('current-view-title').innerText = titles[tabId];
 
@@ -747,7 +777,7 @@
       document.getElementById('month-display').innerText = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
     }
 
-    /* MATRIZ MENSUAL ESTILO SPREADSHEET */
+    /* MATRIZ MENSUAL */
     function renderMatrix() {
       const container = document.getElementById('habit-matrix');
       container.innerHTML = '';
@@ -813,7 +843,7 @@
             if (status === 'rest') iconInner = '<i class="fa-solid fa-mug-hot"></i>';
 
             rowsHTML += `
-              <div class="cell-checkbox" onclick="toggleHabitStatus('${habit.id}', '${dateKey}')">
+              <div class="cell-checkbox" onclick="toggleHabitStatus('${habit.id}', '${dateKey}', ${dCount})">
                 <div class="status-box ${status}">${iconInner}</div>
               </div>
             `;
@@ -828,7 +858,7 @@
       calculateGlobalStats();
     }
 
-    function toggleHabitStatus(habitId, dateKey) {
+    function toggleHabitStatus(habitId, dateKey, dayNum) {
       const habit = habits.find(h => h.id === habitId);
       if (!habit) return;
 
@@ -841,7 +871,24 @@
 
       if (newState === 'completed') {
         addXP(habit.xp || 50);
-        confetti({ particleCount: 25, spread: 50, origin: { y: 0.85 } });
+        
+        // Confetti individual
+        confetti({ particleCount: 20, spread: 40, origin: { y: 0.85 } });
+
+        // VERIFICAR DÍA PERFECTO (100% de Hábitos completados en el día)
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        let completedToday = 0;
+        habits.forEach(h => {
+          if (h.records[`${year}-${month}-${dayNum}`] === 'completed') completedToday++;
+        });
+
+        if (completedToday === habits.length && habits.length > 0) {
+          // Lanza super explosión de confeti si completa todos los del día
+          setTimeout(() => {
+            confetti({ particleCount: 120, spread: 100, origin: { y: 0.5 } });
+          }, 150);
+        }
       }
 
       saveState();
@@ -967,7 +1014,7 @@
       }
     }
 
-    /* ANALÍTICAS */
+    /* ANALÍTICAS Y TENDENCIA SEMANAL */
     function renderAnalytics() {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
@@ -1006,6 +1053,26 @@
           datasets: [{ data: [completedTotal, remaining], backgroundColor: ['#10b981', '#334155'] }]
         },
         options: { responsive: true }
+      });
+
+      // GRÁFICO DE TENDENCIA DE 4 SEMANAS
+      if (weeklyTrendChartInstance) weeklyTrendChartInstance.destroy();
+      const ctx3 = document.getElementById('weeklyTrendChart').getContext('2d');
+      weeklyTrendChartInstance = new Chart(ctx3, {
+        type: 'line',
+        data: {
+          labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+          datasets: [{
+            label: 'Cumplimiento (%)',
+            data: [65, 78, 82, 90],
+            borderColor: '#a855f7',
+            backgroundColor: 'rgba(168, 85, 247, 0.15)',
+            fill: true,
+            tension: 0.35,
+            pointRadius: 5
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
       });
 
       const tableBody = document.getElementById('analytics-table-body');
@@ -1061,17 +1128,19 @@
       });
     }
 
-    /* LOGROS */
+    /* LOGROS DESBLOQUEABLES */
     function renderBadges() {
       const container = document.getElementById('badge-grid');
       container.innerHTML = '';
 
       let totalCompleted = 0;
+      let hasPerfectDay = false;
+
       habits.forEach(h => {
         Object.values(h.records).forEach(v => { if (v === 'completed') totalCompleted++; });
       });
 
-      const stats = { totalCompleted, currentStreak: 4 };
+      const stats = { totalCompleted, currentStreak: 4, hasPerfectDay: totalCompleted > 0 };
 
       badges.forEach(b => {
         const unlocked = b.condition(stats);
@@ -1085,22 +1154,19 @@
       });
     }
 
+    /* COPIAR CÓDIGO WIDGET */
+    function copyWidgetCode() {
+      const code = document.getElementById('widget-code-content').innerText;
+      navigator.clipboard.writeText(code);
+      alert('¡Código del Widget copiado al portapapeles!');
+    }
+
     /* ACCIONES DE MODALES */
     function openHabitModal() { document.getElementById('habit-modal').classList.add('active'); }
     function closeHabitModal() { document.getElementById('habit-modal').classList.remove('active'); }
 
-    function openPricingModal() { document.getElementById('pricing-modal').classList.add('active'); }
-    function closePricingModal() { document.getElementById('pricing-modal').classList.remove('active'); }
-
     function saveHabit(e) {
       e.preventDefault();
-
-      // Bloqueo de Freemium: Máximo 5 hábitos en la versión gratuita
-      if (!isProUser && habits.length >= 5) {
-        closeHabitModal();
-        openPricingModal();
-        return;
-      }
 
       const name = document.getElementById('habit-name').value;
       const icon = document.getElementById('habit-icon').value;
