@@ -8,11 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
@@ -24,17 +22,95 @@
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --accent-primary: #6366f1;
-      --accent-hover: #4f46e5;
-      --accent-glow: rgba(99, 102, 241, 0.2);
       --border-color: #334155;
-      
       --status-completed: #10b981;
-      --status-skipped: #f59e0b;
-      --status-rest: #3b82f6;
-
       --sidebar-width: 260px;
-      --radius-sm: 8px;
-      --radius-md: 12px;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f5f9;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent-primary: #4f46e5;
+      --border-color: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--bg-primary); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+    #sidebar { width: var(--sidebar-width); background: var(--bg-secondary); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 1.5rem 1rem; }
+    .brand { font-size: 1.25rem; font-weight: 800; color: var(--accent-primary); margin-bottom: 1.5rem; display: flex; gap: 0.5rem; align-items: center; }
+    .nav-item { padding: 0.75rem 1rem; border-radius: 8px; color: var(--text-muted); cursor: pointer; font-weight: 600; display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.25rem; }
+    .nav-item.active, .nav-item:hover { background: var(--accent-primary); color: #fff; }
+
+    #main-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+    .header-bar { padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); background: var(--bg-secondary); }
+    
+    .btn { padding: 0.6rem 1.1rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .btn-primary { background: var(--accent-primary); color: white; }
+    .btn-secondary { background: var(--bg-tertiary); color: var(--text-main); }
+
+    .view-container { padding: 2rem; display: none; }
+    .view-container.active { display: block; }
+
+    .grid-container { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; overflow-x: auto; margin-bottom: 2rem; }
+    .grid-row { display: flex; border-bottom: 1px solid var(--border-color); }
+    .habit-cell { width: 250px; padding: 0.75rem; border-right: 1px solid var(--border-color); font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+    .day-cell { width: 40px; height: 45px; border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .status-box { width: 22px; height: 22px; border-radius: 4px; border: 2px solid var(--border-color); }
+    .status-box.completed { background: var(--status-completed); border-color: var(--status-completed); }
+
+    pre.code-box { background: var(--bg-primary); padding: 1rem; border-radius: 8px; color: #38bdf8; overflow-x: auto; font-family: monospace; }
+  </style>
+</head>
+<body>
+
+  <aside id="sidebar">
+    <div class="brand"><i class="fa-solid fa-fire"></i> AetherHabit</div>
+    <div class="nav-item active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-line"></i> Panel Principal</div>
+    <div class="nav-item" onclick="switchTab('widget', this)"><i class="fa-solid fa-mobile-screen"></i> Widget iOS / Mac</div>
+  </aside>
+
+  <main id="main-content">
+    <header class="header-bar">
+      <h1 id="view-title">Panel Principal</h1>
+      <div>
+        <button class="btn btn-secondary" id="theme-indicator" onclick="toggleThemeManually()"><i class="fa-solid fa-moon"></i></button>
+        <button class="btn btn-primary" onclick="addSampleHabit()"><i class="fa-solid fa-plus"></i> + Añadir Hábito</button>
+      </div>
+    </header>
+
+    <section id="dashboard" class="view-container active">
+      <h3>Matriz del Mes</h3>
+      <div class="grid-container" id="habit-matrix"></div>
+    </section>
+
+    <section id="widget" class="view-container">
+      <h3>Widget para iOS / Mac (Scriptable)</h3>
+      <p style="color: var(--text-muted); margin-bottom: 1rem;">Copia este código e insértalo en la app Scriptable en tu dispositivo:</p>
+      <pre class="code-box" id="widget-code">// Widget para Scriptable (iOS / macOS)
+let widget = new ListWidget();
+widget.backgroundColor = new Color("#0f172a");
+
+let title = widget.addText("🔥 AetherHabit");
+title.textColor = new Color("#6366f1");
+title.font = Font.boldSystemFont(16);
+
+widget.addSpacer(8);
+let progressText = widget.addText("Progreso de Hoy: 100%");
+progressText.textColor = new Color("#f8fafc");
+
+Script.setWidget(widget);
+Script.complete();</pre>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>      --radius-md: 12px;
       --radius-lg: 16px;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
       --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
