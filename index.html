@@ -32,6 +32,7 @@
       --shadow: 0 10px 30px -5px rgba(0,0,0,0.3);
     }
 
+    /* TEMAS DE COLOR */
     [data-theme="light"] { --bg-main: #f1f5f9; --bg-card: #ffffff; --bg-header: #ffffff; --bg-hover: #e2e8f0; --border-color: #cbd5e1; --text-main: #0f172a; --text-muted: #64748b; --accent-primary: #4f46e5; }
     [data-theme="midnight-purple"] { --bg-main: #120924; --bg-card: #1e1035; --bg-header: #1a0d30; --bg-hover: #2d184f; --border-color: #3b1f66; --text-main: #f5f3ff; --text-muted: #a78bfa; --accent-primary: #8b5cf6; }
     [data-theme="emerald-forest"] { --bg-main: #062016; --bg-card: #0b2e21; --bg-header: #08271c; --bg-hover: #124533; --border-color: #195c45; --text-main: #ecfdf5; --text-muted: #6ee7b7; --accent-primary: #10b981; }
@@ -172,7 +173,6 @@
     let barChartInstance = null; 
     let doughnutChartInstance = null;
 
-    // Helper para formatear fechas ISO (YYYY-MM-DD)
     function formatDateKey(year, month, day) {
       const m = String(month + 1).padStart(2, '0');
       const d = String(day).padStart(2, '0');
@@ -294,37 +294,43 @@
 
     function generateScriptWidgetCode(todayDone, totalHabits) {
       const pct = totalHabits > 0 ? Math.round((todayDone / totalHabits) * 100) : 0;
-      const code = `// AetherHabit Widget - Generated ScriptWidget
-async function renderWidget() {
-  const canvas = new Canvas(300, 300);
-  canvas.setFillColor("#0b0f19");
-  canvas.fillRect(0, 0, 300, 300);
+      const code = `// AetherHabit Widget - ScriptWidget
+const canvas = new Canvas(300, 300);
 
-  // Header
-  canvas.setTextColor("#6366f1");
-  canvas.setFont("Helvetica-Bold", 22);
-  canvas.drawText("🔥 AetherHabit", 20, 45);
+// Fondo
+canvas.setFillColor("#0b0f19");
+canvas.fillRect(0, 0, 300, 300);
 
-  // Status
-  canvas.setTextColor("#f3f4f6");
-  canvas.setFont("Helvetica", 16);
-  canvas.drawText("Completados Hoy: ${todayDone} / ${totalHabits}", 20, 95);
+// Título
+canvas.setTextColor("#6366f1");
+canvas.setFont("Helvetica-Bold", 22);
+canvas.drawText("🔥 AetherHabit", 20, 45);
 
-  // Progress Bar Outer
-  canvas.setFillColor("#273549");
-  canvas.fillRect(20, 120, 260, 16);
+// Estado de hoy
+canvas.setTextColor("#f3f4f6");
+canvas.setFont("Helvetica", 16);
+canvas.drawText("Completados Hoy: ${todayDone} / ${totalHabits}", 20, 95);
 
-  // Progress Bar Inner
-  canvas.setFillColor("#10b981");
-  canvas.fillRect(20, 120, Math.round(260 * (${pct} / 100)), 16);
+// Barra de progreso (Fondo)
+canvas.setFillColor("#273549");
+canvas.fillRect(20, 120, 260, 16);
 
-  canvas.setTextColor("#9ca3af");
-  canvas.setFont("Helvetica", 14);
-  canvas.drawText("Progreso: ${pct}%", 20, 165);
+// Barra de progreso (Relleno)
+canvas.setFillColor("#10b981");
+canvas.fillRect(20, 120, Math.round(260 * (${pct} / 100)), 16);
 
-  return canvas;
+// Porcentaje
+canvas.setTextColor("#9ca3af");
+canvas.setFont("Helvetica", 14);
+canvas.drawText("Progreso: ${pct}%", 20, 165);
+
+// Presentar en ScriptWidget
+if (typeof config !== "undefined" && config.runsInWidget) {
+  Script.setWidget(canvas);
+} else {
+  canvas.present();
 }
-createWidget(renderWidget);`;
+Script.complete();`;
 
       document.getElementById('widget-code-text').innerText = code;
     }
