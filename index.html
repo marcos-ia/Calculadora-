@@ -28,13 +28,242 @@
       --accent-primary: #6366f1;
       --accent-glow: rgba(99, 102, 241, 0.25);
       --status-completed: #10b981;
-      --status-skipped: #f59e0b;
-      --status-rest: #3b82f6;
       --radius: 16px;
       --shadow: 0 10px 30px -5px rgba(0,0,0,0.3);
     }
 
-    /* PALETA EXTENSA DE TEMAS (MULTITITUD DE COLORES DE FONDO) */
+    /* PALETA EXTENSA DE TEMAS */
+    [data-theme="light"] { --bg-main: #f1f5f9; --bg-card: #ffffff; --bg-header: #ffffff; --bg-hover: #e2e8f0; --border-color: #cbd5e1; --text-main: #0f172a; --text-muted: #64748b; --accent-primary: #4f46e5; }
+    [data-theme="midnight-purple"] { --bg-main: #120924; --bg-card: #1e1035; --bg-header: #1a0d30; --bg-hover: #2d184f; --border-color: #3b1f66; --text-main: #f5f3ff; --text-muted: #a78bfa; --accent-primary: #8b5cf6; }
+    [data-theme="emerald-forest"] { --bg-main: #062016; --bg-card: #0b2e21; --bg-header: #08271c; --bg-hover: #124533; --border-color: #195c45; --text-main: #ecfdf5; --text-muted: #6ee7b7; --accent-primary: #10b981; }
+    [data-theme="sunset-crimson"] { --bg-main: #210811; --bg-card: #330f1c; --bg-header: #2b0b17; --bg-hover: #481729; --border-color: #5e2037; --text-main: #fff1f2; --text-muted: #fda4af; --accent-primary: #f43f5e; }
+    [data-theme="ocean-deep"] { --bg-main: #031525; --bg-card: #08233c; --bg-header: #051c31; --bg-hover: #0f365c; --border-color: #164878; --text-main: #f0f9ff; --text-muted: #7dd3fc; --accent-primary: #0284c7; }
+    [data-theme="cyberpunk-neon"] { --bg-main: #0d0221; --bg-card: #19053d; --bg-header: #13032e; --bg-hover: #290861; --border-color: #ff007f; --text-main: #00f5ff; --text-muted: #ff77bc; --accent-primary: #ff007f; }
+    [data-theme="nordic-frost"] { --bg-main: #2e3440; --bg-card: #3b4252; --bg-header: #353c4a; --bg-hover: #434c5e; --border-color: #4c566a; --text-main: #eceff4; --text-muted: #88c0d0; --accent-primary: #81a1c1; }
+    [data-theme="warm-amber"] { --bg-main: #1c130b; --bg-card: #2c1e13; --bg-header: #24180e; --bg-hover: #3e2b1b; --border-color: #543c27; --text-main: #fffbeb; --text-muted: #fcd34d; --accent-primary: #f59e0b; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+    
+    body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 2rem 1rem; }
+
+    #app-container { width: 100%; max-width: 1200px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column; }
+
+    .app-header { background: var(--bg-header); padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
+    .brand-title { font-size: 1.5rem; font-weight: 800; color: var(--accent-primary); display: flex; align-items: center; gap: 0.75rem; }
+    .header-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+    .btn { padding: 0.65rem 1.2rem; border-radius: 10px; border: none; font-weight: 700; font-size: 0.875rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .btn-primary { background: var(--accent-primary); color: #ffffff; }
+    .btn-secondary { background: var(--bg-hover); color: var(--text-main); border: 1px solid var(--border-color); }
+
+    .theme-palette-bar { background: var(--bg-header); padding: 1rem 2rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 1rem; overflow-x: auto; }
+    .theme-swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border-color); cursor: pointer; flex-shrink: 0; }
+    .theme-swatch.active { transform: scale(1.2); border-color: var(--text-main); }
+
+    .nav-tabs { display: flex; background: var(--bg-header); padding: 0 2rem; border-bottom: 1px solid var(--border-color); gap: 0.5rem; overflow-x: auto; }
+    .tab-btn { padding: 1rem 1.25rem; color: var(--text-muted); font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent; display: flex; align-items: center; gap: 0.6rem; white-space: nowrap; }
+    .tab-btn.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); }
+
+    .main-body { padding: 2rem; }
+    .view-pane { display: none; }
+    .view-pane.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .matrix-wrapper { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius); overflow-x: auto; margin-bottom: 2rem; }
+    .matrix-table { width: 100%; border-collapse: collapse; min-width: 900px; }
+    .matrix-table th, .matrix-table td { padding: 0.85rem; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); text-align: center; }
+    .matrix-table th:first-child, .matrix-table td:first-child { text-align: left; width: 240px; position: sticky; left: 0; background: var(--bg-card); z-index: 10; }
+
+    .cell-check { width: 26px; height: 26px; border-radius: 6px; border: 2px solid var(--border-color); margin: 0 auto; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+    .cell-check.completed { background: var(--status-completed); border-color: var(--status-completed); color: #fff; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--bg-main); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: var(--radius); }
+    .stat-card .lbl { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+    .stat-card .val { font-size: 1.75rem; font-weight: 800; margin-top: 0.3rem; color: var(--text-main); }
+
+    .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+    .chart-box { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.5rem; }
+
+    pre.widget-code { background: var(--bg-main); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 12px; color: #38bdf8; font-family: monospace; font-size: 0.85rem; overflow-x: auto; }
+
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; }
+    .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+    .modal-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); width: 100%; max-width: 440px; padding: 1.75rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-muted); }
+    .form-input { width: 100%; padding: 0.75rem 1rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+
+  <div id="app-container">
+    <header class="app-header">
+      <div class="brand-title"><i class="fa-solid fa-fire-flame-curved"></i> AetherHabit SaaS</div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" onclick="applyAutoThemeByTime()"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto Hora</button>
+        <button class="btn btn-primary" onclick="openModal()"><i class="fa-solid fa-plus"></i> Nuevo Hábito</button>
+      </div>
+    </header>
+
+    <div class="theme-palette-bar">
+      <div class="theme-swatch active" style="background: #0b0f19;" onclick="setTheme('dark')"></div>
+      <div class="theme-swatch" style="background: #f1f5f9;" onclick="setTheme('light')"></div>
+      <div class="theme-swatch" style="background: #120924;" onclick="setTheme('midnight-purple')"></div>
+      <div class="theme-swatch" style="background: #062016;" onclick="setTheme('emerald-forest')"></div>
+      <div class="theme-swatch" style="background: #210811;" onclick="setTheme('sunset-crimson')"></div>
+      <div class="theme-swatch" style="background: #031525;" onclick="setTheme('ocean-deep')"></div>
+      <div class="theme-swatch" style="background: #0d0221;" onclick="setTheme('cyberpunk-neon')"></div>
+      <div class="theme-swatch" style="background: #2e3440;" onclick="setTheme('nordic-frost')"></div>
+      <div class="theme-swatch" style="background: #1c130b;" onclick="setTheme('warm-amber')"></div>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchView('dashboard', this)"><i class="fa-solid fa-chart-line"></i> Panel</button>
+      <button class="tab-btn" onclick="switchView('analytics', this)"><i class="fa-solid fa-chart-pie"></i> Analíticas</button>
+      <button class="tab-btn" onclick="switchView('widget', this)"><i class="fa-solid fa-mobile-screen"></i> ScriptWidget</button>
+    </nav>
+
+    <div class="main-body">
+      <section id="dashboard" class="view-pane active">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="lbl">Cumplimiento</div><div class="val" id="stat-rate">0%</div></div>
+          <div class="stat-card"><div class="lbl">Racha</div><div class="val" style="color: #f59e0b;">Activa 🔥</div></div>
+          <div class="stat-card"><div class="lbl">Hoy</div><div class="val" style="color: #10b981;" id="stat-today">0 / 0</div></div>
+        </div>
+        <div class="matrix-wrapper">
+          <table class="matrix-table" id="matrix-table"></table>
+        </div>
+      </section>
+
+      <section id="analytics" class="view-pane">
+        <div class="charts-grid">
+          <div class="chart-box"><canvas id="barChart" height="200"></canvas></div>
+          <div class="chart-box"><canvas id="doughnutChart" height="200"></canvas></div>
+        </div>
+      </section>
+
+      <section id="widget" class="view-pane">
+        <button class="btn btn-secondary" style="margin-bottom: 1rem;" onclick="copyWidgetCode()">Copiar Código</button>
+        <pre class="widget-code" id="widget-code-text">// AetherHabit Widget - ScriptWidget
+async function renderWidget() {
+  const canvas = new Canvas(300, 300);
+  canvas.setFillColor("#0b0f19");
+  canvas.fillRect(0, 0, 300, 300);
+  canvas.setTextColor("#6366f1");
+  canvas.setFont("Helvetica-Bold", 22);
+  canvas.drawText("🔥 AetherHabit", 20, 45);
+  canvas.setTextColor("#f3f4f6");
+  canvas.setFont("Helvetica", 16);
+  canvas.drawText("Progreso de Hoy: 100%", 20, 90);
+  return canvas;
+}
+createWidget(renderWidget);</pre>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="habit-modal">
+    <div class="modal-box">
+      <form onsubmit="saveNewHabit(event)">
+        <div class="form-group"><label>Nuevo Hábito</label><input type="text" id="habit-name-input" class="form-input" required></div>
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let habits = JSON.parse(localStorage.getItem('aether_habits_saas')) || [
+      { id: '1', name: '🧠 Meditación', records: {} },
+      { id: '2', name: '🏋️ Ejercicio', records: {} }
+    ];
+    let barChartInstance = null; let doughnutChartInstance = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('aether_custom_theme') || 'dark';
+      setTheme(savedTheme, false);
+      renderMatrix();
+    });
+
+    function setTheme(themeName, isUser = true) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      if (isUser) localStorage.setItem('aether_custom_theme', themeName);
+      document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
+    }
+
+    function applyAutoThemeByTime() {
+      const isNight = new Date().getHours() >= 20 || new Date().getHours() < 7;
+      setTheme(isNight ? 'dark' : 'light', true);
+    }
+
+    function saveState() { localStorage.setItem('aether_habits_saas', JSON.stringify(habits)); }
+
+    function renderMatrix() {
+      const table = document.getElementById('matrix-table');
+      const now = new Date(); const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      
+      let html = `<thead><tr><th>Hábito</th>` + Array.from({length: daysInMonth}, (_, i) => `<th>${i+1}</th>`).join('') + `</tr></thead><tbody>`;
+      let total = 0, todayTotal = 0;
+
+      habits.forEach(h => {
+        html += `<tr><td><b>${h.name}</b></td>`;
+        for (let d = 1; d <= daysInMonth; d++) {
+          const key = `${now.getFullYear()}-${now.getMonth()}-${d}`;
+          const ok = h.records[key] === 'completed';
+          if(ok) total++; if(d === now.getDate() && ok) todayTotal++;
+          html += `<td><div class="cell-check ${ok ? 'completed' : ''}" onclick="toggleCell('${h.id}', '${key}')">${ok ? '✓' : ''}</div></td>`;
+        }
+        html += `</tr>`;
+      });
+      table.innerHTML = html + `</tbody>`;
+
+      document.getElementById('stat-rate').innerText = (habits.length > 0 ? Math.round((total / (habits.length * daysInMonth)) * 100) : 0) + '%';
+      document.getElementById('stat-today').innerText = `${todayTotal} / ${habits.length}`;
+      renderAnalytics(daysInMonth, now);
+    }
+
+    function toggleCell(id, dateKey) {
+      const h = habits.find(x => x.id === id);
+      if (h.records[dateKey]) delete h.records[dateKey];
+      else { h.records[dateKey] = 'completed'; typeof confetti === 'function' && confetti(); }
+      saveState(); renderMatrix();
+    }
+
+    function renderAnalytics(days, now) {
+      if(!document.getElementById('barChart') || !document.getElementById('doughnutChart')) return;
+      
+      const labels = Array.from({length: days}, (_, i) => i + 1);
+      const data = labels.map(d => habits.filter(h => h.records[`${now.getFullYear()}-${now.getMonth()}-${d}`]).length);
+
+      if (barChartInstance) barChartInstance.destroy();
+      barChartInstance = new Chart(document.getElementById('barChart').getContext('2d'), { type: 'bar', data: { labels, datasets: [{ data, backgroundColor: '#6366f1' }] }});
+
+      let completed = data.reduce((a, b) => a + b, 0);
+      let remaining = Math.max(0, (habits.length * days) - completed);
+      
+      if (doughnutChartInstance) doughnutChartInstance.destroy();
+      doughnutChartInstance = new Chart(document.getElementById('doughnutChart').getContext('2d'), { type: 'doughnut', data: { labels: ['Hecho', 'Pendiente'], datasets: [{ data: [completed, remaining], backgroundColor: ['#10b981', '#273549'] }] }});
+    }
+
+    function switchView(id, btn) {
+      document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active'); btn.classList.add('active');
+    }
+
+    function openModal() { document.getElementById('habit-modal').classList.add('active'); }
+    function closeModal() { document.getElementById('habit-modal').classList.remove('active'); }
+
+    function saveNewHabit(e) {
+      e.preventDefault(); const name = document.getElementById('habit-name-input').value;
+      if (name) { habits.push({ id: Date.now().toString(), name, records: {} }); saveState(); renderMatrix(); closeModal(); document.getElementById('habit-name-input').value = ''; }
+    }
+
+    function copyWidgetCode() { navigator.clipboard.writeText(document.getElementById('widget-code-text').innerText); alert('Copiado'); }
+  </script>
+</body>
+</html>    /* PALETA EXTENSA DE TEMAS (MULTITITUD DE COLORES DE FONDO) */
     [data-theme="light"] {
       --bg-main: #f1f5f9;
       --bg-card: #ffffff;
