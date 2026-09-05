@@ -5,11 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AetherHabit SaaS - Habit Tracker Pro</title>
   
+  <!-- Google Fonts & Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Chart.js & Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -35,6 +37,715 @@
     /* PALETA EXTENSA DE TEMAS (MULTITITUD DE COLORES DE FONDO) */
     [data-theme="light"] {
       --bg-main: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-header: #ffffff;
+      --bg-hover: #e2e8f0;
+      --border-color: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent-primary: #4f46e5;
+      --accent-glow: rgba(79, 70, 229, 0.15);
+    }
+
+    [data-theme="midnight-purple"] {
+      --bg-main: #120924;
+      --bg-card: #1e1035;
+      --bg-header: #1a0d30;
+      --bg-hover: #2d184f;
+      --border-color: #3b1f66;
+      --text-main: #f5f3ff;
+      --text-muted: #a78bfa;
+      --accent-primary: #8b5cf6;
+      --accent-glow: rgba(139, 92, 246, 0.3);
+    }
+
+    [data-theme="emerald-forest"] {
+      --bg-main: #062016;
+      --bg-card: #0b2e21;
+      --bg-header: #08271c;
+      --bg-hover: #124533;
+      --border-color: #195c45;
+      --text-main: #ecfdf5;
+      --text-muted: #6ee7b7;
+      --accent-primary: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.3);
+    }
+
+    [data-theme="sunset-crimson"] {
+      --bg-main: #210811;
+      --bg-card: #330f1c;
+      --bg-header: #2b0b17;
+      --bg-hover: #481729;
+      --border-color: #5e2037;
+      --text-main: #fff1f2;
+      --text-muted: #fda4af;
+      --accent-primary: #f43f5e;
+      --accent-glow: rgba(244, 63, 94, 0.3);
+    }
+
+    [data-theme="ocean-deep"] {
+      --bg-main: #031525;
+      --bg-card: #08233c;
+      --bg-header: #051c31;
+      --bg-hover: #0f365c;
+      --border-color: #164878;
+      --text-main: #f0f9ff;
+      --text-muted: #7dd3fc;
+      --accent-primary: #0284c7;
+      --accent-glow: rgba(2, 132, 199, 0.3);
+    }
+
+    [data-theme="cyberpunk-neon"] {
+      --bg-main: #0d0221;
+      --bg-card: #19053d;
+      --bg-header: #13032e;
+      --bg-hover: #290861;
+      --border-color: #ff007f;
+      --text-main: #00f5ff;
+      --text-muted: #ff77bc;
+      --accent-primary: #ff007f;
+      --accent-glow: rgba(255, 0, 127, 0.4);
+    }
+
+    [data-theme="nordic-frost"] {
+      --bg-main: #2e3440;
+      --bg-card: #3b4252;
+      --bg-header: #353c4a;
+      --bg-hover: #434c5e;
+      --border-color: #4c566a;
+      --text-main: #eceff4;
+      --text-muted: #88c0d0;
+      --accent-primary: #81a1c1;
+      --accent-glow: rgba(129, 161, 193, 0.3);
+    }
+
+    [data-theme="warm-amber"] {
+      --bg-main: #1c130b;
+      --bg-card: #2c1e13;
+      --bg-header: #24180e;
+      --bg-hover: #3e2b1b;
+      --border-color: #543c27;
+      --text-main: #fffbeb;
+      --text-muted: #fcd34d;
+      --accent-primary: #f59e0b;
+      --accent-glow: rgba(245, 158, 11, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+    
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center; /* CENTRADO DE LA PÁGINA */
+      align-items: flex-start;
+      padding: 2rem 1rem;
+    }
+
+    /* CONTENEDOR CENTRALIZADO EN EL MEDIO DE LA PÁGINA */
+    #app-container {
+      width: 100%;
+      max-width: 1200px; /* Ancho máximo centrado perfecto */
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    .app-header {
+      background: var(--bg-header);
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* BOTONES */
+    .btn {
+      padding: 0.65rem 1.2rem;
+      border-radius: 10px;
+      border: none;
+      font-weight: 700;
+      font-size: 0.875rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+    .btn-primary { background: var(--accent-primary); color: #ffffff; }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 4px 12px var(--accent-glow); }
+    .btn-secondary { background: var(--bg-hover); color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-secondary:hover { background: var(--border-color); }
+
+    /* BARRA DE SELECCIÓN DE COLORES / TEMAS */
+    .theme-palette-bar {
+      background: var(--bg-header);
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      overflow-x: auto;
+    }
+
+    .palette-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .theme-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
+    }
+    .theme-swatch:hover { transform: scale(1.15); border-color: var(--text-main); }
+    .theme-swatch.active { transform: scale(1.2); border-color: var(--text-main); box-shadow: 0 0 10px var(--accent-primary); }
+
+    /* NAVEGACIÓN POR PESTAÑAS */
+    .nav-tabs {
+      display: flex;
+      background: var(--bg-header);
+      padding: 0 2rem;
+      border-bottom: 1px solid var(--border-color);
+      gap: 0.5rem;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 1rem 1.25rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--text-main); }
+    .tab-btn.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); }
+
+    /* CONTENIDO PRINCIPAL */
+    .main-body { padding: 2rem; }
+
+    .view-pane { display: none; }
+    .view-pane.active { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MATRIZ DE SEGUIMIENTO */
+    .matrix-wrapper {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      margin-bottom: 2rem;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+
+    .matrix-table th, .matrix-table td {
+      padding: 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .matrix-table th:first-child, .matrix-table td:first-child {
+      text-align: left;
+      width: 240px;
+      position: sticky;
+      left: 0;
+      background: var(--bg-card);
+      z-index: 10;
+    }
+
+    .cell-check {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 2px solid var(--border-color);
+      margin: 0 auto;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      transition: transform 0.15s ease;
+    }
+    .cell-check:active { transform: scale(0.85); }
+    .cell-check.completed { background: var(--status-completed); border-color: var(--status-completed); color: #fff; }
+
+    /* CARDS DE ESTADÍSTICAS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      padding: 1.25rem;
+      border-radius: var(--radius);
+    }
+    .stat-card .lbl { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+    .stat-card .val { font-size: 1.75rem; font-weight: 800; margin-top: 0.3rem; color: var(--text-main); }
+
+    /* GRÁFICOS Y WIDGET */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .chart-box {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+
+    pre.widget-code {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      padding: 1.25rem;
+      border-radius: 12px;
+      color: #38bdf8;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      max-height: 300px;
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 440px;
+      padding: 1.75rem;
+    }
+
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-muted); }
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }
+    .form-input:focus { outline: none; border-color: var(--accent-primary); }
+  </style>
+</head>
+<body>
+
+  <!-- CONTENEDOR PRINCIPAL TOTALMENTE CENTRADO -->
+  <div id="app-container">
+    
+    <!-- ENCABEZADO SUPERIOR -->
+    <header class="app-header">
+      <div class="brand-title">
+        <i class="fa-solid fa-fire-flame-curved"></i>
+        <span>AetherHabit SaaS</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" id="auto-theme-indicator" title="Tema Automático Activado">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Auto Hora
+        </button>
+        <button class="btn btn-primary" onclick="openModal()">
+          <i class="fa-solid fa-plus"></i> Nuevo Hábito
+        </button>
+      </div>
+    </header>
+
+    <!-- PALETA DE COLORES DE FONDO MULTITUD DE OPCIONES -->
+    <div class="theme-palette-bar">
+      <span class="palette-title"><i class="fa-solid fa-palette"></i> Colores de Fondo:</span>
+      <div class="theme-swatch active" style="background: #0b0f19;" onclick="setTheme('dark')" title="Oscuro Tech"></div>
+      <div class="theme-swatch" style="background: #f1f5f9;" onclick="setTheme('light')" title="Claro Minimal"></div>
+      <div class="theme-swatch" style="background: #120924;" onclick="setTheme('midnight-purple')" title="Púrpura Noche"></div>
+      <div class="theme-swatch" style="background: #062016;" onclick="setTheme('emerald-forest')" title="Esmeralda Bosque"></div>
+      <div class="theme-swatch" style="background: #210811;" onclick="setTheme('sunset-crimson')" title="Rojo Carmesí"></div>
+      <div class="theme-swatch" style="background: #031525;" onclick="setTheme('ocean-deep')" title="Azul Océano"></div>
+      <div class="theme-swatch" style="background: #0d0221;" onclick="setTheme('cyberpunk-neon')" title="Cyberpunk Neón"></div>
+      <div class="theme-swatch" style="background: #2e3440;" onclick="setTheme('nordic-frost')" title="Nórdico Frío"></div>
+      <div class="theme-swatch" style="background: #1c130b;" onclick="setTheme('warm-amber')" title="Ámbar Cálido"></div>
+    </div>
+
+    <!-- PESTAÑAS DE NAVEGACIÓN -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchView('dashboard', this)">
+        <i class="fa-solid fa-chart-line"></i> Panel de Hábitos
+      </button>
+      <button class="tab-btn" onclick="switchView('analytics', this)">
+        <i class="fa-solid fa-chart-pie"></i> Analíticas
+      </button>
+      <button class="tab-btn" onclick="switchView('widget', this)">
+        <i class="fa-solid fa-mobile-screen"></i> Widget ScriptWidget
+      </button>
+    </nav>
+
+    <!-- CONTENIDO DE LAS VISTAS -->
+    <div class="main-body">
+
+      <!-- VISTA 1: DASHBOARD -->
+      <section id="dashboard" class="view-pane active">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="lbl">Cumplimiento Mensual</div>
+            <div class="val" id="stat-rate">0%</div>
+          </div>
+          <div class="stat-card">
+            <div class="lbl">Racha Actual</div>
+            <div class="val" style="color: #f59e0b;">5 Días 🔥</div>
+          </div>
+          <div class="stat-card">
+            <div class="lbl">Completados Hoy</div>
+            <div class="val" style="color: #10b981;" id="stat-today">0 / 0</div>
+          </div>
+        </div>
+
+        <h3 style="margin-bottom: 1rem; font-weight: 800; font-size: 1.1rem;">Seguimiento del Mes</h3>
+        <div class="matrix-wrapper">
+          <table class="matrix-table" id="matrix-table">
+            <!-- Renderizado por JS -->
+          </table>
+        </div>
+      </section>
+
+      <!-- VISTA 2: ANALÍTICAS -->
+      <section id="analytics" class="view-pane">
+        <h3 style="margin-bottom: 1.5rem; font-weight: 800;">Rendimiento Gráfico</h3>
+        <div class="charts-grid">
+          <div class="chart-box">
+            <h4 style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-muted);">Completados por Día</h4>
+            <canvas id="barChart" height="200"></canvas>
+          </div>
+          <div class="chart-box">
+            <h4 style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-muted);">Proporción de Metas</h4>
+            <canvas id="doughnutChart" height="200"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISTA 3: WIDGET SCRIPTWIDGET -->
+      <section id="widget" class="view-pane">
+        <h3 style="margin-bottom: 0.5rem; font-weight: 800;">Widget para Pantalla de Inicio (ScriptWidget)</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+          Copia este código adaptable e insértalo en la aplicación gratuita <b>ScriptWidget</b> para mostrar el progreso de tus hábitos:
+        </p>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">CÓDIGO SCRIPTWIDGET (JAVASCRIPT)</span>
+          <button class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="copyWidgetCode()">
+            <i class="fa-solid fa-copy"></i> Copiar Código
+          </button>
+        </div>
+
+        <pre class="widget-code" id="widget-code-text">// AetherHabit Widget - Adaptado para ScriptWidget
+async function renderWidget() {
+  const canvas = new Canvas(300, 300);
+  
+  // Fondo oscuro
+  canvas.setFillColor("#0b0f19");
+  canvas.fillRect(0, 0, 300, 300);
+
+  // Título
+  canvas.setTextColor("#6366f1");
+  canvas.setFont("Helvetica-Bold", 22);
+  canvas.drawText("🔥 AetherHabit", 20, 45);
+
+  // Subtítulo / Progreso
+  canvas.setTextColor("#f3f4f6");
+  canvas.setFont("Helvetica", 16);
+  canvas.drawText("Progreso de Hoy: 100%", 20, 90);
+
+  // Estado
+  canvas.setTextColor("#10b981");
+  canvas.setFont("Helvetica-Bold", 14);
+  canvas.drawText("¡Todos los hábitos completados!", 20, 130);
+
+  return canvas;
+}
+
+createWidget(renderWidget);</pre>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- MODAL CREAR HÁBITO -->
+  <div class="modal-backdrop" id="habit-modal">
+    <div class="modal-box">
+      <h3 style="margin-bottom: 1.25rem; font-weight: 800;">Añadir Nuevo Hábito</h3>
+      <form onsubmit="saveNewHabit(event)">
+        <div class="form-group">
+          <label>Nombre del Hábito</label>
+          <input type="text" id="habit-name-input" class="form-input" placeholder="Ej: Leer 30 minutos" required>
+        </div>
+        <div class="form-group">
+          <label>Categoría</label>
+          <select id="habit-cat-input" class="form-input">
+            <option>Salud</option>
+            <option>Productividad</option>
+            <option>Fitness</option>
+            <option>Estudio</option>
+          </select>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // 1. MODO OSCURO / CLARO AUTOMÁTICO SEGÚN LA HORA
+    function applyAutoThemeByTime() {
+      const hour = new Date().getHours();
+      const isNight = hour >= 20 || hour < 7;
+      if (!localStorage.getItem('aether_custom_theme')) {
+        setTheme(isNight ? 'dark' : 'light', false);
+      } else {
+        setTheme(localStorage.getItem('aether_custom_theme'), false);
+      }
+    }
+
+    // 2. CAMBIO MANUAL DE TEMAS / COLORES DE FONDO
+    function setTheme(themeName, isUserSelection = true) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      if (isUserSelection) {
+        localStorage.setItem('aether_custom_theme', themeName);
+      }
+      
+      document.querySelectorAll('.theme-swatch').forEach(swatch => {
+        swatch.classList.remove('active');
+      });
+    }
+
+    // 3. ESTADO DE HÁBITOS
+    let habits = JSON.parse(localStorage.getItem('aether_habits_saas')) || [
+      { id: '1', name: '🧠 Meditación Mañanera', records: {} },
+      { id: '2', name: '🏋️ Entrenamiento Físico', records: {} },
+      { id: '3', name: '📖 Leer 20 Páginas', records: {} }
+    ];
+
+    let barChartInstance = null;
+    let doughnutChartInstance = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyAutoThemeByTime();
+      renderMatrix();
+    });
+
+    function saveState() {
+      localStorage.setItem('aether_habits_saas', JSON.stringify(habits));
+    }
+
+    // 4. RENDERIZADO DE LA MATRIZ DE DÍAS
+    function renderMatrix() {
+      const table = document.getElementById('matrix-table');
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      let headerHTML = `<thead><tr><th>Hábito</th>`;
+      for (let d = 1; d <= daysInMonth; d++) {
+        headerHTML += `<th>${d}</th>`;
+      }
+      headerHTML += `</tr></thead>`;
+
+      let bodyHTML = `<tbody>`;
+      let totalCompletedMonth = 0;
+      let totalCompletedToday = 0;
+
+      habits.forEach(habit => {
+        bodyHTML += `<tr><td><b>${habit.name}</b></td>`;
+        for (let d = 1; d <= daysInMonth; d++) {
+          const dateKey = `${year}-${month}-${d}`;
+          const isCompleted = habit.records[dateKey] === 'completed';
+          if (isCompleted) totalCompletedMonth++;
+          if (d === now.getDate() && isCompleted) totalCompletedToday++;
+
+          bodyHTML += `
+            <td>
+              <div class="cell-check ${isCompleted ? 'completed' : ''}" onclick="toggleCell('${habit.id}', '${dateKey}')">
+                ${isCompleted ? '<i class="fa-solid fa-check"></i>' : ''}
+              </div>
+            </td>
+          `;
+        }
+        bodyHTML += `</tr>`;
+      });
+      bodyHTML += `</tbody>`;
+
+      table.innerHTML = headerHTML + bodyHTML;
+
+      // Actualizar estadísticas
+      const totalPossible = habits.length * daysInMonth;
+      const rate = totalPossible > 0 ? Math.round((totalCompletedMonth / totalPossible) * 100) : 0;
+      document.getElementById('stat-rate').innerText = `${rate}%`;
+      document.getElementById('stat-today').innerText = `${totalCompletedToday} / ${habits.length}`;
+
+      renderAnalytics();
+    }
+
+    function toggleCell(habitId, dateKey) {
+      const habit = habits.find(h => h.id === habitId);
+      if (!habit) return;
+
+      if (habit.records[dateKey] === 'completed') {
+        delete habit.records[dateKey];
+      } else {
+        habit.records[dateKey] = 'completed';
+        confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 } });
+      }
+
+      saveState();
+      renderMatrix();
+    }
+
+    // 5. RENDERIZADO DE ANALÍTICAS Y GRÁFICOS
+    function renderAnalytics() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      const labels = Array.from({length: daysInMonth}, (_, i) => i + 1);
+      const dataPoints = labels.map(d => {
+        let count = 0;
+        habits.forEach(h => {
+          if (h.records[`${year}-${month}-${d}`] === 'completed') count++;
+        });
+        return count;
+      });
+
+      if (barChartInstance) barChartInstance.destroy();
+      const ctx1 = document.getElementById('barChart').getContext('2d');
+      barChartInstance = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{ label: 'Completados', data: dataPoints, backgroundColor: '#6366f1', borderRadius: 4 }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+
+      let completed = dataPoints.reduce((a, b) => a + b, 0);
+      let remaining = Math.max(0, (habits.length * daysInMonth) - completed);
+
+      if (doughnutChartInstance) doughnutChartInstance.destroy();
+      const ctx2 = document.getElementById('doughnutChart').getContext('2d');
+      doughnutChartInstance = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Completado', 'Pendiente'],
+          datasets: [{ data: [completed, remaining], backgroundColor: ['#10b981', '#273549'] }]
+        },
+        options: { responsive: true }
+      });
+    }
+
+    // 6. NAVEGACIÓN VISTAS Y MODAL
+    function switchView(viewId, btn) {
+      document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(viewId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function openModal() { document.getElementById('habit-modal').classList.add('active'); }
+    function closeModal() { document.getElementById('habit-modal').classList.remove('active'); }
+
+    function saveNewHabit(e) {
+      e.preventDefault();
+      const name = document.getElementById('habit-name-input').value;
+      if (name) {
+        habits.push({ id: Date.now().toString(), name, records: {} });
+        saveState();
+        renderMatrix();
+        closeModal();
+        document.getElementById('habit-name-input').value = '';
+      }
+    }
+
+    function copyWidgetCode() {
+      const code = document.getElementById('widget-code-text').innerText;
+      navigator.clipboard.writeText(code);
+      alert('¡Código copiado con éxito!');
+    }
+  </script>
+</body>
+</html>      --bg-main: #f1f5f9;
       --bg-card: #ffffff;
       --bg-header: #ffffff;
       --bg-hover: #e2e8f0;
