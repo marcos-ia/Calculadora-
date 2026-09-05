@@ -32,7 +32,6 @@
       --shadow: 0 10px 30px -5px rgba(0,0,0,0.3);
     }
 
-    /* PALETA EXTENSA DE TEMAS */
     [data-theme="light"] { --bg-main: #f1f5f9; --bg-card: #ffffff; --bg-header: #ffffff; --bg-hover: #e2e8f0; --border-color: #cbd5e1; --text-main: #0f172a; --text-muted: #64748b; --accent-primary: #4f46e5; }
     [data-theme="midnight-purple"] { --bg-main: #120924; --bg-card: #1e1035; --bg-header: #1a0d30; --bg-hover: #2d184f; --border-color: #3b1f66; --text-main: #f5f3ff; --text-muted: #a78bfa; --accent-primary: #8b5cf6; }
     [data-theme="emerald-forest"] { --bg-main: #062016; --bg-card: #0b2e21; --bg-header: #08271c; --bg-hover: #124533; --border-color: #195c45; --text-main: #ecfdf5; --text-muted: #6ee7b7; --accent-primary: #10b981; }
@@ -74,7 +73,7 @@
     .matrix-table th, .matrix-table td { padding: 0.85rem; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); text-align: center; }
     .matrix-table th:first-child, .matrix-table td:first-child { text-align: left; width: 240px; position: sticky; left: 0; background: var(--bg-card); z-index: 10; }
 
-    .cell-check { width: 26px; height: 26px; border-radius: 6px; border: 2px solid var(--border-color); margin: 0 auto; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+    .cell-check { width: 26px; height: 26px; border-radius: 6px; border: 2px solid var(--border-color); margin: 0 auto; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; user-select: none; }
     .cell-check.completed { background: var(--status-completed); border-color: var(--status-completed); color: #fff; }
 
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
@@ -85,9 +84,9 @@
     .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
     .chart-box { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.5rem; }
 
-    pre.widget-code { background: var(--bg-main); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 12px; color: #38bdf8; font-family: monospace; font-size: 0.85rem; overflow-x: auto; }
+    pre.widget-code { background: var(--bg-main); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 12px; color: #38bdf8; font-family: monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
 
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
     .modal-backdrop.active { opacity: 1; pointer-events: auto; }
     .modal-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); width: 100%; max-width: 440px; padding: 1.75rem; }
     .form-group { margin-bottom: 1.25rem; }
@@ -107,15 +106,15 @@
     </header>
 
     <div class="theme-palette-bar">
-      <div class="theme-swatch active" style="background: #0b0f19;" onclick="setTheme('dark')"></div>
-      <div class="theme-swatch" style="background: #f1f5f9;" onclick="setTheme('light')"></div>
-      <div class="theme-swatch" style="background: #120924;" onclick="setTheme('midnight-purple')"></div>
-      <div class="theme-swatch" style="background: #062016;" onclick="setTheme('emerald-forest')"></div>
-      <div class="theme-swatch" style="background: #210811;" onclick="setTheme('sunset-crimson')"></div>
-      <div class="theme-swatch" style="background: #031525;" onclick="setTheme('ocean-deep')"></div>
-      <div class="theme-swatch" style="background: #0d0221;" onclick="setTheme('cyberpunk-neon')"></div>
-      <div class="theme-swatch" style="background: #2e3440;" onclick="setTheme('nordic-frost')"></div>
-      <div class="theme-swatch" style="background: #1c130b;" onclick="setTheme('warm-amber')"></div>
+      <div class="theme-swatch" data-theme="dark" style="background: #0b0f19;" onclick="setTheme('dark')"></div>
+      <div class="theme-swatch" data-theme="light" style="background: #f1f5f9;" onclick="setTheme('light')"></div>
+      <div class="theme-swatch" data-theme="midnight-purple" style="background: #120924;" onclick="setTheme('midnight-purple')"></div>
+      <div class="theme-swatch" data-theme="emerald-forest" style="background: #062016;" onclick="setTheme('emerald-forest')"></div>
+      <div class="theme-swatch" data-theme="sunset-crimson" style="background: #210811;" onclick="setTheme('sunset-crimson')"></div>
+      <div class="theme-swatch" data-theme="ocean-deep" style="background: #031525;" onclick="setTheme('ocean-deep')"></div>
+      <div class="theme-swatch" data-theme="cyberpunk-neon" style="background: #0d0221;" onclick="setTheme('cyberpunk-neon')"></div>
+      <div class="theme-swatch" data-theme="nordic-frost" style="background: #2e3440;" onclick="setTheme('nordic-frost')"></div>
+      <div class="theme-swatch" data-theme="warm-amber" style="background: #1c130b;" onclick="setTheme('warm-amber')"></div>
     </div>
 
     <nav class="nav-tabs">
@@ -127,9 +126,9 @@
     <div class="main-body">
       <section id="dashboard" class="view-pane active">
         <div class="stats-grid">
-          <div class="stat-card"><div class="lbl">Cumplimiento</div><div class="val" id="stat-rate">0%</div></div>
+          <div class="stat-card"><div class="lbl">Cumplimiento Mensual</div><div class="val" id="stat-rate">0%</div></div>
           <div class="stat-card"><div class="lbl">Racha</div><div class="val" style="color: #f59e0b;">Activa 🔥</div></div>
-          <div class="stat-card"><div class="lbl">Hoy</div><div class="val" style="color: #10b981;" id="stat-today">0 / 0</div></div>
+          <div class="stat-card"><div class="lbl">Progreso Hoy</div><div class="val" style="color: #10b981;" id="stat-today">0 / 0</div></div>
         </div>
         <div class="matrix-wrapper">
           <table class="matrix-table" id="matrix-table"></table>
@@ -144,21 +143,8 @@
       </section>
 
       <section id="widget" class="view-pane">
-        <button class="btn btn-secondary" style="margin-bottom: 1rem;" onclick="copyWidgetCode()">Copiar Código</button>
-        <pre class="widget-code" id="widget-code-text">// AetherHabit Widget - ScriptWidget
-async function renderWidget() {
-  const canvas = new Canvas(300, 300);
-  canvas.setFillColor("#0b0f19");
-  canvas.fillRect(0, 0, 300, 300);
-  canvas.setTextColor("#6366f1");
-  canvas.setFont("Helvetica-Bold", 22);
-  canvas.drawText("🔥 AetherHabit", 20, 45);
-  canvas.setTextColor("#f3f4f6");
-  canvas.setFont("Helvetica", 16);
-  canvas.drawText("Progreso de Hoy: 100%", 20, 90);
-  return canvas;
-}
-createWidget(renderWidget);</pre>
+        <button class="btn btn-secondary" style="margin-bottom: 1rem;" onclick="copyWidgetCode()"><i class="fa-solid fa-copy"></i> Copiar Código</button>
+        <pre class="widget-code" id="widget-code-text"></pre>
       </section>
     </div>
   </div>
@@ -166,9 +152,14 @@ createWidget(renderWidget);</pre>
   <div class="modal-backdrop" id="habit-modal">
     <div class="modal-box">
       <form onsubmit="saveNewHabit(event)">
-        <div class="form-group"><label>Nuevo Hábito</label><input type="text" id="habit-name-input" class="form-input" required></div>
-        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Guardar</button>
+        <div class="form-group">
+          <label for="habit-name-input">Nuevo Hábito</label>
+          <input type="text" id="habit-name-input" class="form-input" placeholder="Ej: Leer 15 páginas" required>
+        </div>
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
       </form>
     </div>
   </div>
@@ -178,7 +169,15 @@ createWidget(renderWidget);</pre>
       { id: '1', name: '🧠 Meditación', records: {} },
       { id: '2', name: '🏋️ Ejercicio', records: {} }
     ];
-    let barChartInstance = null; let doughnutChartInstance = null;
+    let barChartInstance = null; 
+    let doughnutChartInstance = null;
+
+    // Helper para formatear fechas ISO (YYYY-MM-DD)
+    function formatDateKey(year, month, day) {
+      const m = String(month + 1).padStart(2, '0');
+      const d = String(day).padStart(2, '0');
+      return `${year}-${m}-${d}`;
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
       const savedTheme = localStorage.getItem('aether_custom_theme') || 'dark';
@@ -189,7 +188,12 @@ createWidget(renderWidget);</pre>
     function setTheme(themeName, isUser = true) {
       document.documentElement.setAttribute('data-theme', themeName);
       if (isUser) localStorage.setItem('aether_custom_theme', themeName);
-      document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
+      
+      document.querySelectorAll('.theme-swatch').forEach(s => {
+        s.classList.toggle('active', s.getAttribute('data-theme') === themeName);
+      });
+
+      if (barChartInstance) renderMatrix();
     }
 
     function applyAutoThemeByTime() {
@@ -197,70 +201,161 @@ createWidget(renderWidget);</pre>
       setTheme(isNight ? 'dark' : 'light', true);
     }
 
-    function saveState() { localStorage.setItem('aether_habits_saas', JSON.stringify(habits)); }
+    function saveState() { 
+      localStorage.setItem('aether_habits_saas', JSON.stringify(habits)); 
+    }
 
     function renderMatrix() {
       const table = document.getElementById('matrix-table');
-      const now = new Date(); const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const now = new Date(); 
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const todayDay = now.getDate();
       
       let html = `<thead><tr><th>Hábito</th>` + Array.from({length: daysInMonth}, (_, i) => `<th>${i+1}</th>`).join('') + `</tr></thead><tbody>`;
-      let total = 0, todayTotal = 0;
+      let totalCompleted = 0;
+      let todayTotal = 0;
 
       habits.forEach(h => {
         html += `<tr><td><b>${h.name}</b></td>`;
         for (let d = 1; d <= daysInMonth; d++) {
-          const key = `${now.getFullYear()}-${now.getMonth()}-${d}`;
+          const key = formatDateKey(year, month, d);
           const ok = h.records[key] === 'completed';
-          if(ok) total++; if(d === now.getDate() && ok) todayTotal++;
+          if (ok) totalCompleted++; 
+          if (d === todayDay && ok) todayTotal++;
           html += `<td><div class="cell-check ${ok ? 'completed' : ''}" onclick="toggleCell('${h.id}', '${key}')">${ok ? '✓' : ''}</div></td>`;
         }
         html += `</tr>`;
       });
       table.innerHTML = html + `</tbody>`;
 
-      document.getElementById('stat-rate').innerText = (habits.length > 0 ? Math.round((total / (habits.length * daysInMonth)) * 100) : 0) + '%';
+      const maxPossible = habits.length * daysInMonth;
+      const ratePct = maxPossible > 0 ? Math.round((totalCompleted / maxPossible) * 100) : 0;
+      
+      document.getElementById('stat-rate').innerText = ratePct + '%';
       document.getElementById('stat-today').innerText = `${todayTotal} / ${habits.length}`;
+
       renderAnalytics(daysInMonth, now);
+      generateScriptWidgetCode(todayTotal, habits.length);
     }
 
     function toggleCell(id, dateKey) {
       const h = habits.find(x => x.id === id);
-      if (h.records[dateKey]) delete h.records[dateKey];
-      else { h.records[dateKey] = 'completed'; typeof confetti === 'function' && confetti(); }
-      saveState(); renderMatrix();
+      if (!h) return;
+      if (h.records[dateKey]) {
+        delete h.records[dateKey];
+      } else { 
+        h.records[dateKey] = 'completed'; 
+        if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+      }
+      saveState(); 
+      renderMatrix();
     }
 
     function renderAnalytics(days, now) {
-      if(!document.getElementById('barChart') || !document.getElementById('doughnutChart')) return;
+      if (!document.getElementById('barChart') || !document.getElementById('doughnutChart')) return;
       
+      const year = now.getFullYear();
+      const month = now.getMonth();
       const labels = Array.from({length: days}, (_, i) => i + 1);
-      const data = labels.map(d => habits.filter(h => h.records[`${now.getFullYear()}-${now.getMonth()}-${d}`]).length);
+      
+      const data = labels.map(d => {
+        const key = formatDateKey(year, month, d);
+        return habits.filter(h => h.records[key] === 'completed').length;
+      });
+
+      const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim() || '#6366f1';
+      const borderCol = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim() || '#273549';
 
       if (barChartInstance) barChartInstance.destroy();
-      barChartInstance = new Chart(document.getElementById('barChart').getContext('2d'), { type: 'bar', data: { labels, datasets: [{ data, backgroundColor: '#6366f1' }] }});
+      barChartInstance = new Chart(document.getElementById('barChart').getContext('2d'), { 
+        type: 'bar', 
+        data: { 
+          labels, 
+          datasets: [{ label: 'Hábitos completados', data, backgroundColor: primaryColor }] 
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
 
       let completed = data.reduce((a, b) => a + b, 0);
       let remaining = Math.max(0, (habits.length * days) - completed);
       
       if (doughnutChartInstance) doughnutChartInstance.destroy();
-      doughnutChartInstance = new Chart(document.getElementById('doughnutChart').getContext('2d'), { type: 'doughnut', data: { labels: ['Hecho', 'Pendiente'], datasets: [{ data: [completed, remaining], backgroundColor: ['#10b981', '#273549'] }] }});
+      doughnutChartInstance = new Chart(document.getElementById('doughnutChart').getContext('2d'), { 
+        type: 'doughnut', 
+        data: { 
+          labels: ['Hecho', 'Pendiente'], 
+          datasets: [{ data: [completed, remaining], backgroundColor: ['#10b981', borderCol] }] 
+        },
+        options: { responsive: true }
+      });
+    }
+
+    function generateScriptWidgetCode(todayDone, totalHabits) {
+      const pct = totalHabits > 0 ? Math.round((todayDone / totalHabits) * 100) : 0;
+      const code = `// AetherHabit Widget - Generated ScriptWidget
+async function renderWidget() {
+  const canvas = new Canvas(300, 300);
+  canvas.setFillColor("#0b0f19");
+  canvas.fillRect(0, 0, 300, 300);
+
+  // Header
+  canvas.setTextColor("#6366f1");
+  canvas.setFont("Helvetica-Bold", 22);
+  canvas.drawText("🔥 AetherHabit", 20, 45);
+
+  // Status
+  canvas.setTextColor("#f3f4f6");
+  canvas.setFont("Helvetica", 16);
+  canvas.drawText("Completados Hoy: ${todayDone} / ${totalHabits}", 20, 95);
+
+  // Progress Bar Outer
+  canvas.setFillColor("#273549");
+  canvas.fillRect(20, 120, 260, 16);
+
+  // Progress Bar Inner
+  canvas.setFillColor("#10b981");
+  canvas.fillRect(20, 120, Math.round(260 * (${pct} / 100)), 16);
+
+  canvas.setTextColor("#9ca3af");
+  canvas.setFont("Helvetica", 14);
+  canvas.drawText("Progreso: ${pct}%", 20, 165);
+
+  return canvas;
+}
+createWidget(renderWidget);`;
+
+      document.getElementById('widget-code-text').innerText = code;
     }
 
     function switchView(id, btn) {
       document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(id).classList.add('active'); btn.classList.add('active');
+      document.getElementById(id).classList.add('active'); 
+      btn.classList.add('active');
     }
 
     function openModal() { document.getElementById('habit-modal').classList.add('active'); }
     function closeModal() { document.getElementById('habit-modal').classList.remove('active'); }
 
     function saveNewHabit(e) {
-      e.preventDefault(); const name = document.getElementById('habit-name-input').value;
-      if (name) { habits.push({ id: Date.now().toString(), name, records: {} }); saveState(); renderMatrix(); closeModal(); document.getElementById('habit-name-input').value = ''; }
+      e.preventDefault(); 
+      const input = document.getElementById('habit-name-input');
+      const name = input.value.trim();
+      if (name) { 
+        habits.push({ id: Date.now().toString(), name, records: {} }); 
+        saveState(); 
+        renderMatrix(); 
+        closeModal(); 
+        input.value = ''; 
+      }
     }
 
-    function copyWidgetCode() { navigator.clipboard.writeText(document.getElementById('widget-code-text').innerText); alert('Copiado'); }
+    function copyWidgetCode() { 
+      navigator.clipboard.writeText(document.getElementById('widget-code-text').innerText); 
+      alert('¡Código de ScriptWidget copiado al portapapeles!'); 
+    }
   </script>
 </body>
 </html>
