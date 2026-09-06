@@ -1,30 +1,32 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AetherHabit SaaS - Habit Tracker Pro</title>
+  <title>AetherHabit | Premium Habit Tracking</title>
   
-  <!-- Google Fonts & Font Awesome -->
+  <!-- Google Fonts: Plus Jakarta Sans para un toque limpio y moderno -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Chart.js & Confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Confetti para el refuerzo positivo -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
-    /* LA NUEVA PALETA DE COLORES */
+    /* ==========================================
+       PALETA DE COLORES "LUXURY ORGANIC"
+       ========================================== */
     :root {
-      --bg-main: #2F4156;         /* Navy - Fondo general */
-      --bg-card: #567C8D;         /* Teal - Cajas y cabeceras */
-      --border-color: #C8D9E6;     /* Sky Blue - Bordes y acentos */
-      --text-main: #FFFFFF;        /* White - Texto principal */
-      --text-muted: #F5EFEB;       /* Beige - Texto secundario */
-      --accent-primary: #C8D9E6;   /* Sky Blue para los checks */
+      --moss: #6A6A53;
+      --mahogany: #4D342D;
+      --olive: #9B9879;
+      --egg-shell: #EDE7DB;
+      --linen: #DDCCB7;
+      
       --radius: 12px;
+      --shadow-sm: 0 4px 12px rgba(77, 52, 45, 0.08);
+      --shadow-md: 0 8px 24px rgba(77, 52, 45, 0.12);
     }
 
     * {
@@ -35,6 +37,390 @@
     }
 
     body {
+      background-color: var(--egg-shell);
+      color: var(--mahogany);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* --- NAVBAR PREMIUM --- */
+    .navbar {
+      width: 100%;
+      background-color: var(--linen);
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(106, 106, 83, 0.2);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--mahogany);
+    }
+
+    .premium-btn {
+      background-color: var(--mahogany);
+      color: var(--egg-shell);
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .premium-btn:hover {
+      background-color: var(--moss);
+      transform: translateY(-2px);
+    }
+
+    /* --- CONTENEDOR PRINCIPAL --- */
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      padding: 40px 20px;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--mahogany);
+      margin-bottom: 30px;
+      text-align: left;
+    }
+
+    /* --- AÑADIR HÁBITOS --- */
+    .add-habit-card {
+      background-color: var(--linen);
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      gap: 12px;
+      margin-bottom: 40px;
+      border: 1px solid rgba(106, 106, 83, 0.15);
+    }
+
+    .add-habit-card select,
+    .add-habit-card input {
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--olive);
+      background-color: var(--egg-shell);
+      color: var(--mahogany);
+      font-size: 15px;
+      outline: none;
+      transition: border 0.3s ease;
+    }
+
+    .add-habit-card input {
+      flex: 1;
+    }
+
+    .add-habit-card input:focus {
+      border-color: var(--mahogany);
+    }
+
+    .add-habit-card button {
+      background-color: var(--olive);
+      color: var(--egg-shell);
+      border: none;
+      padding: 0 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .add-habit-card button:hover {
+      background-color: var(--moss);
+    }
+
+    /* --- TABLA DE HÁBITOS --- */
+    .table-wrapper {
+      background-color: var(--linen);
+      border-radius: var(--radius);
+      padding: 10px;
+      box-shadow: var(--shadow-sm);
+      overflow-x: auto;
+      border: 1px solid rgba(106, 106, 83, 0.15);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 16px 8px;
+      text-align: center;
+      border-bottom: 1px solid rgba(155, 152, 121, 0.3); /* Linea Olive transparente */
+    }
+
+    th {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--moss);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .col-habito {
+      text-align: left;
+      padding-left: 20px;
+      min-width: 260px;
+      font-weight: 500;
+      font-size: 16px;
+      color: var(--mahogany);
+    }
+
+    /* Checkboxes estilo Lujo */
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: var(--moss);
+    }
+
+    /* --- MODAL PREMIUM --- */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(77, 52, 45, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--egg-shell);
+      padding: 40px;
+      border-radius: 16px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .modal-content h2 {
+      color: var(--mahogany);
+      margin-bottom: 15px;
+      font-size: 24px;
+    }
+
+    .modal-content p {
+      color: var(--moss);
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .price-tag {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--mahogany);
+      margin-bottom: 25px;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 15px; right: 20px;
+      background: none; border: none;
+      font-size: 24px; color: var(--moss);
+      cursor: pointer;
+    }
+
+    .btn-upgrade {
+      background: var(--mahogany);
+      color: var(--egg-shell);
+      border: none;
+      padding: 14px 100%;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    
+    .btn-upgrade:hover {
+      background: var(--moss);
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- NAVEGACIÓN SaaS -->
+  <nav class="navbar">
+    <div class="brand">AetherHabit.</div>
+    <button class="premium-btn" onclick="abrirModal()">
+      <span>✦</span> Upgrade to Pro - 3,99 €
+    </button>
+  </nav>
+
+  <div class="container">
+    <h2 class="section-title">Tu progreso de este mes</h2>
+
+    <!-- AÑADIR HÁBITO -->
+    <div class="add-habit-card">
+      <select id="emoji-select">
+        <option value="🌿">🌿</option>
+        <option value="📖">📖</option>
+        <option value="🧘🏽‍♂️">🧘🏽‍♂️</option>
+        <option value="💧">💧</option>
+        <option value="🖋️">🖋️</option>
+        <option value="🏃🏽‍♀️">🏃🏽‍♀️</option>
+        <option value="🥗">🥗</option>
+        <option value="💼">💼</option>
+      </select>
+      <input type="text" id="habit-input" placeholder="Cultiva un nuevo hábito...">
+      <button onclick="agregarHabito()">Añadir</button>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-wrapper">
+      <table id="habit-table">
+        <thead>
+          <tr id="table-header">
+            <th class="col-habito">Hábito</th>
+            <!-- JS rellenará los 18 días -->
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <!-- JS rellenará las filas -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODAL DE PAGO (PAYWALL) -->
+  <div class="modal-overlay" id="premium-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="cerrarModal()">×</button>
+      <h2>Desbloquea tu potencial</h2>
+      <p>Has alcanzado el límite del plan gratuito. Actualiza a <strong>AetherHabit Pro</strong> para añadir hábitos ilimitados, acceder a estadísticas avanzadas y sincronización total.</p>
+      <div class="price-tag">3,99 € <span style="font-size: 14px; font-weight: normal; color: var(--moss);">/pago único</span></div>
+      <button class="btn-upgrade" onclick="simularPago()">Obtener Pro Ahora</button>
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_DAYS = 18;
+    const LIMITE_GRATIS = 4; // Límite de hábitos antes de cobrar
+
+    // 1. CARGAR DATOS (Persistencia de lujo)
+    let habitos = JSON.parse(localStorage.getItem('aether_premium_habits')) || [
+      { name: "🧘🏽‍♂️ Meditación Matutina", days: Array(TOTAL_DAYS).fill(false) },
+      { name: "🏃🏽‍♀️ Ejercicio Físico", days: Array(TOTAL_DAYS).fill(false) },
+      { name: "📖 Leer 15 páginas", days: Array(TOTAL_DAYS).fill(false) }
+    ];
+
+    function guardarDatos() {
+      localStorage.setItem('aether_premium_habits', JSON.stringify(habitos));
+    }
+
+    // 2. DIBUJAR LA TABLA
+    function renderizarTabla() {
+      const headerRow = document.getElementById("table-header");
+      headerRow.innerHTML = '<th class="col-habito">Hábito</th>';
+      for (let i = 1; i <= TOTAL_DAYS; i++) {
+        headerRow.innerHTML += `<th>${i}</th>`;
+      }
+
+      const tableBody = document.getElementById("table-body");
+      tableBody.innerHTML = "";
+
+      habitos.forEach((habito, index) => {
+        let filaHtml = `<tr><td class="col-habito">${habito.name}</td>`;
+        for (let day = 0; day < TOTAL_DAYS; day++) {
+          const isChecked = habito.days[day] ? "checked" : "";
+          filaHtml += `
+            <td>
+              <input type="checkbox" ${isChecked} 
+                onchange="marcarDia(${index}, ${day}, this.checked)">
+            </td>`;
+        }
+        filaHtml += `</tr>`;
+        tableBody.innerHTML += filaHtml;
+      });
+    }
+
+    // 3. LOGICA AL MARCAR
+    function marcarDia(habitIndex, dayIndex, isChecked) {
+      habitos[habitIndex].days[dayIndex] = isChecked;
+      guardarDatos();
+      
+      if (isChecked) {
+        // Confeti elegante con la nueva paleta de colores
+        confetti({ 
+          particleCount: 40, 
+          spread: 50, 
+          origin: { y: 0.8 }, 
+          colors: ['#6A6A53', '#9B9879', '#4D342D'] 
+        });
+      }
+    }
+
+    // 4. LÓGICA DE NEGOCIO (EL PAYWALL)
+    function agregarHabito() {
+      // Validar si es gratis y llegó al límite
+      if (habitos.length >= LIMITE_GRATIS) {
+        abrirModal();
+        return;
+      }
+
+      const emoji = document.getElementById("emoji-select").value;
+      const texto = document.getElementById("habit-input").value.trim();
+
+      if (texto === "") return;
+
+      habitos.push({
+        name: `${emoji} ${texto}`,
+        days: Array(TOTAL_DAYS).fill(false)
+      });
+
+      document.getElementById("habit-input").value = ""; 
+      guardarDatos();
+      renderizarTabla();
+    }
+
+    // 5. FUNCIONES DEL MODAL (VENTA)
+    function abrirModal() {
+      document.getElementById("premium-modal").style.display = "flex";
+    }
+
+    function cerrarModal() {
+      document.getElementById("premium-modal").style.display = "none";
+    }
+
+    function simularPago() {
+      alert("Aquí se conectaría Stripe o LemonSqueezy para cobrar los 3,99 €.");
+      cerrarModal();
+    }
+
+    // Inicializar
+    window.onload = renderizarTabla;
+  </script>
+</body>
+</html>    body {
       background-color: var(--bg-main);
       color: var(--text-main);
       padding: 40px 20px;
