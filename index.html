@@ -166,9 +166,17 @@
   </div>
 
   <script>
-    let habits = JSON.parse(localStorage.getItem('aether_habits_saas')) || [
-      { id: '1', name: '🧠 Meditación', records: {} },
-      { id: '2', name: '🏋️ Ejercicio', records: {} }
+    let habits = // 1. Intentamos cargar desde la memoria; si está vacío, cargamos los 3 por defecto
+let habitos = JSON.parse(localStorage.getItem('mis_habitos')) || [
+  { name: "🧠 Meditación", days: Array(18).fill(false) },
+  { name: "🏋️ Ejercicio", days: Array(18).fill(false) },
+  { name: "📖 Leer 10 paginas por la noche", days: Array(18).fill(false) }
+];
+
+// 2. Función clave para guardar los datos
+function guardarDatos() {
+  localStorage.setItem('mis_habitos', JSON.stringify(habitos));
+}
     ];
     let barChartInstance = null; 
     let doughnutChartInstance = null;
