@@ -5,84 +5,118 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AetherHabit | Premium Habit Tracking</title>
   
-  <!-- Google Fonts: Plus Jakarta Sans para un toque limpio y moderno -->
+  <!-- Tipografías: Abril Fatface (para los títulos retro/lujo) y Plus Jakarta (para lectura) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Confetti para el refuerzo positivo -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     /* ==========================================
-       PALETA DE COLORES "LUXURY ORGANIC"
+       PALETA BASE: COASTAL BLUE & VARIABLES DINÁMICAS
        ========================================== */
     :root {
-      --moss: #6A6A53;
-      --mahogany: #4D342D;
-      --olive: #9B9879;
-      --egg-shell: #EDE7DB;
-      --linen: #DDCCB7;
+      /* Valores por defecto (se pueden sobreescribir con el personalizador) */
+      --bg-color: #F5EEDD;      /* Merino - Fondo */
+      --panel-bg: #84B3CE;      /* Rock Blue - Paneles (usado con transparencia) */
+      --text-main: #16587B;     /* Venice Blue - Textos oscuros y acentos */
+      --text-light: #F5EEDD;    /* Merino - Textos sobre fondos oscuros */
       
       --radius: 12px;
-      --shadow-sm: 0 4px 12px rgba(77, 52, 45, 0.08);
-      --shadow-md: 0 8px 24px rgba(77, 52, 45, 0.12);
+      --shadow-sm: 0 4px 12px rgba(22, 88, 123, 0.1);
+      --shadow-md: 0 8px 24px rgba(22, 88, 123, 0.2);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     body {
-      background-color: var(--egg-shell);
-      color: var(--mahogany);
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
+      transition: background-color 0.3s ease;
     }
 
-    /* --- NAVBAR PREMIUM --- */
+    /* Fuentes de los títulos basadas en la imagen de la paleta */
+    h1, h2, .brand {
+      font-family: 'Abril Fatface', serif;
+      font-weight: normal;
+      letter-spacing: 1px;
+    }
+
+    /* --- NAVBAR Y PERSONALIZADOR --- */
     .navbar {
       width: 100%;
-      background-color: var(--linen);
+      background-color: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
       padding: 16px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(106, 106, 83, 0.2);
+      border-bottom: 2px solid var(--text-main);
       box-shadow: var(--shadow-sm);
     }
 
     .brand {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--mahogany);
+      font-size: 28px;
+      color: var(--text-main);
     }
 
-    .premium-btn {
-      background-color: var(--mahogany);
-      color: var(--egg-shell);
-      padding: 10px 24px;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: all 0.3s ease;
+    .nav-controls {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .color-picker-group {
       display: flex;
       align-items: center;
       gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .color-picker-group input[type="color"] {
+      appearance: none;
+      -webkit-appearance: none;
+      border: 2px solid var(--text-main);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      overflow: hidden;
+      padding: 0;
+    }
+    
+    .color-picker-group input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    .color-picker-group input[type="color"]::-webkit-color-swatch { border: none; }
+
+    .premium-btn {
+      background-color: var(--text-main);
+      color: var(--text-light);
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
     }
 
     .premium-btn:hover {
-      background-color: var(--moss);
       transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+      opacity: 0.9;
     }
 
     /* --- CONTENEDOR PRINCIPAL --- */
@@ -93,69 +127,64 @@
     }
 
     .section-title {
-      font-size: 32px;
-      font-weight: 300;
-      color: var(--mahogany);
+      font-size: 38px;
+      color: var(--text-main);
       margin-bottom: 30px;
-      text-align: left;
     }
 
     /* --- AÑADIR HÁBITOS --- */
     .add-habit-card {
-      background-color: var(--linen);
+      background-color: rgba(132, 179, 206, 0.15); /* Rock Blue muy suave */
       padding: 24px;
       border-radius: var(--radius);
       box-shadow: var(--shadow-sm);
       display: flex;
       gap: 12px;
       margin-bottom: 40px;
-      border: 1px solid rgba(106, 106, 83, 0.15);
+      border: 1px solid var(--text-main);
     }
 
     .add-habit-card select,
     .add-habit-card input {
       padding: 14px 16px;
       border-radius: 8px;
-      border: 1px solid var(--olive);
-      background-color: var(--egg-shell);
-      color: var(--mahogany);
+      border: 2px solid var(--text-main);
+      background-color: var(--bg-color);
+      color: var(--text-main);
       font-size: 15px;
+      font-weight: 500;
       outline: none;
-      transition: border 0.3s ease;
     }
 
     .add-habit-card input {
       flex: 1;
     }
 
-    .add-habit-card input:focus {
-      border-color: var(--mahogany);
-    }
-
     .add-habit-card button {
-      background-color: var(--olive);
-      color: var(--egg-shell);
+      background-color: var(--text-main);
+      color: var(--text-light);
       border: none;
       padding: 0 28px;
       border-radius: 8px;
-      font-weight: 600;
-      font-size: 15px;
+      font-family: 'Abril Fatface', serif;
+      font-size: 20px;
+      letter-spacing: 1px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: opacity 0.3s ease;
     }
 
     .add-habit-card button:hover {
-      background-color: var(--moss);
+      opacity: 0.85;
     }
 
     /* --- TABLA DE HÁBITOS --- */
     .table-wrapper {
-      background-color: var(--linen);
+      background-color: rgba(255, 255, 255, 0.5);
       border-radius: var(--radius);
       padding: 10px;
       box-shadow: var(--shadow-sm);
       overflow-x: auto;
-      border: 1px solid rgba(106, 106, 83, 0.15);
+      border: 1px solid var(--text-main);
     }
 
     table {
@@ -166,44 +195,39 @@
     th, td {
       padding: 16px 8px;
       text-align: center;
-      border-bottom: 1px solid rgba(155, 152, 121, 0.3); /* Linea Olive transparente */
+      border-bottom: 1px solid rgba(22, 88, 123, 0.2);
     }
 
     th {
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--moss);
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      font-family: 'Abril Fatface', serif;
+      font-size: 18px;
+      color: var(--text-main);
     }
 
-    tr:last-child td {
-      border-bottom: none;
-    }
+    tr:last-child td { border-bottom: none; }
 
     .col-habito {
       text-align: left;
       padding-left: 20px;
       min-width: 260px;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 16px;
-      color: var(--mahogany);
+      color: var(--text-main);
     }
 
-    /* Checkboxes estilo Lujo */
     input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       cursor: pointer;
-      accent-color: var(--moss);
+      accent-color: var(--text-main);
     }
 
     /* --- MODAL PREMIUM --- */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(77, 52, 45, 0.6);
-      backdrop-filter: blur(4px);
+      background: rgba(22, 88, 123, 0.7);
+      backdrop-filter: blur(5px);
       display: none;
       justify-content: center;
       align-items: center;
@@ -211,31 +235,33 @@
     }
 
     .modal-content {
-      background: var(--egg-shell);
+      background: var(--bg-color);
       padding: 40px;
       border-radius: 16px;
-      max-width: 400px;
+      max-width: 420px;
       text-align: center;
       box-shadow: var(--shadow-md);
       position: relative;
+      border: 4px solid var(--text-main);
     }
 
     .modal-content h2 {
-      color: var(--mahogany);
+      color: var(--text-main);
       margin-bottom: 15px;
-      font-size: 24px;
+      font-size: 32px;
     }
 
     .modal-content p {
-      color: var(--moss);
+      color: var(--text-main);
       margin-bottom: 25px;
       line-height: 1.6;
+      font-weight: 500;
     }
 
     .price-tag {
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--mahogany);
+      font-family: 'Abril Fatface', serif;
+      font-size: 38px;
+      color: var(--text-main);
       margin-bottom: 25px;
     }
 
@@ -243,37 +269,44 @@
       position: absolute;
       top: 15px; right: 20px;
       background: none; border: none;
-      font-size: 24px; color: var(--moss);
+      font-size: 28px; color: var(--text-main);
       cursor: pointer;
     }
 
     .btn-upgrade {
-      background: var(--mahogany);
-      color: var(--egg-shell);
+      background: var(--text-main);
+      color: var(--text-light);
       border: none;
-      padding: 14px 100%;
+      padding: 16px 100%;
       width: 100%;
       border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
+      font-family: 'Abril Fatface', serif;
+      font-size: 22px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: opacity 0.3s;
     }
     
     .btn-upgrade:hover {
-      background: var(--moss);
+      opacity: 0.9;
     }
-
   </style>
 </head>
 <body>
 
-  <!-- NAVEGACIÓN SaaS -->
+  <!-- NAVEGACIÓN SaaS CON PERSONALIZADOR -->
   <nav class="navbar">
     <div class="brand">AetherHabit.</div>
-    <button class="premium-btn" onclick="abrirModal()">
-      <span>✦</span> Upgrade to Pro - 3,99 €
-    </button>
+    <div class="nav-controls">
+      <div class="color-picker-group">
+        Tema:
+        <input type="color" id="picker-bg" title="Color de Fondo">
+        <input type="color" id="picker-accent" title="Color de Textos/Acentos">
+        <button onclick="resetColors()" style="background:none;border:none;cursor:pointer;font-size:18px;" title="Resetear a Coastal Blue">🔄</button>
+      </div>
+      <button class="premium-btn" onclick="abrirModal()">
+        Upgrade to Pro - 3,99 €
+      </button>
+    </div>
   </nav>
 
   <div class="container">
@@ -282,14 +315,14 @@
     <!-- AÑADIR HÁBITO -->
     <div class="add-habit-card">
       <select id="emoji-select">
-        <option value="🌿">🌿</option>
-        <option value="📖">📖</option>
+        <option value="🌊">🌊</option>
+        <option value="🐚">🐚</option>
         <option value="🧘🏽‍♂️">🧘🏽‍♂️</option>
         <option value="💧">💧</option>
-        <option value="🖋️">🖋️</option>
+        <option value="📖">📖</option>
         <option value="🏃🏽‍♀️">🏃🏽‍♀️</option>
         <option value="🥗">🥗</option>
-        <option value="💼">💼</option>
+        <option value="💰">💰</option>
       </select>
       <input type="text" id="habit-input" placeholder="Cultiva un nuevo hábito...">
       <button onclick="agregarHabito()">Añadir</button>
@@ -300,7 +333,7 @@
       <table id="habit-table">
         <thead>
           <tr id="table-header">
-            <th class="col-habito">Hábito</th>
+            <th class="col-habito">HÁBITO</th>
             <!-- JS rellenará los 18 días -->
           </tr>
         </thead>
@@ -311,24 +344,67 @@
     </div>
   </div>
 
-  <!-- MODAL DE PAGO (PAYWALL) -->
+  <!-- MODAL DE PAGO -->
   <div class="modal-overlay" id="premium-modal">
     <div class="modal-content">
       <button class="close-modal" onclick="cerrarModal()">×</button>
       <h2>Desbloquea tu potencial</h2>
-      <p>Has alcanzado el límite del plan gratuito. Actualiza a <strong>AetherHabit Pro</strong> para añadir hábitos ilimitados, acceder a estadísticas avanzadas y sincronización total.</p>
-      <div class="price-tag">3,99 € <span style="font-size: 14px; font-weight: normal; color: var(--moss);">/pago único</span></div>
+      <p>Has alcanzado el límite de la versión gratuita. Actualiza a <strong>Pro</strong> para añadir hábitos ilimitados y dominar tu rutina.</p>
+      <div class="price-tag">3,99 €</div>
       <button class="btn-upgrade" onclick="simularPago()">Obtener Pro Ahora</button>
     </div>
   </div>
 
   <script>
     const TOTAL_DAYS = 18;
-    const LIMITE_GRATIS = 4; // Límite de hábitos antes de cobrar
+    const LIMITE_GRATIS = 4;
 
-    // 1. CARGAR DATOS (Persistencia de lujo)
+    /* ==========================================
+       SISTEMA DE PERSONALIZACIÓN DE COLORES
+       ========================================== */
+    const root = document.documentElement;
+    const pickerBg = document.getElementById("picker-bg");
+    const pickerAccent = document.getElementById("picker-accent");
+
+    // Colores por defecto (Coastal Blue)
+    const DEFAULT_BG = "#F5EEDD";
+    const DEFAULT_ACCENT = "#16587B";
+
+    function aplicarColores(bg, accent) {
+      root.style.setProperty('--bg-color', bg);
+      root.style.setProperty('--text-main', accent);
+      pickerBg.value = bg;
+      pickerAccent.value = accent;
+    }
+
+    function cargarColores() {
+      const savedBg = localStorage.getItem('aether_bg_color') || DEFAULT_BG;
+      const savedAccent = localStorage.getItem('aether_accent_color') || DEFAULT_ACCENT;
+      aplicarColores(savedBg, savedAccent);
+    }
+
+    function resetColors() {
+      aplicarColores(DEFAULT_BG, DEFAULT_ACCENT);
+      localStorage.removeItem('aether_bg_color');
+      localStorage.removeItem('aether_accent_color');
+    }
+
+    // Escuchar cambios en los selectores
+    pickerBg.addEventListener("input", (e) => {
+      root.style.setProperty('--bg-color', e.target.value);
+      localStorage.setItem('aether_bg_color', e.target.value);
+    });
+
+    pickerAccent.addEventListener("input", (e) => {
+      root.style.setProperty('--text-main', e.target.value);
+      localStorage.setItem('aether_accent_color', e.target.value);
+    });
+
+    /* ==========================================
+       LÓGICA DE HÁBITOS
+       ========================================== */
     let habitos = JSON.parse(localStorage.getItem('aether_premium_habits')) || [
-      { name: "🧘🏽‍♂️ Meditación Matutina", days: Array(TOTAL_DAYS).fill(false) },
+      { name: "🌊 Meditación Matutina", days: Array(TOTAL_DAYS).fill(false) },
       { name: "🏃🏽‍♀️ Ejercicio Físico", days: Array(TOTAL_DAYS).fill(false) },
       { name: "📖 Leer 15 páginas", days: Array(TOTAL_DAYS).fill(false) }
     ];
@@ -337,10 +413,9 @@
       localStorage.setItem('aether_premium_habits', JSON.stringify(habitos));
     }
 
-    // 2. DIBUJAR LA TABLA
     function renderizarTabla() {
       const headerRow = document.getElementById("table-header");
-      headerRow.innerHTML = '<th class="col-habito">Hábito</th>';
+      headerRow.innerHTML = '<th class="col-habito">HÁBITO</th>';
       for (let i = 1; i <= TOTAL_DAYS; i++) {
         headerRow.innerHTML += `<th>${i}</th>`;
       }
@@ -363,25 +438,23 @@
       });
     }
 
-    // 3. LOGICA AL MARCAR
     function marcarDia(habitIndex, dayIndex, isChecked) {
       habitos[habitIndex].days[dayIndex] = isChecked;
       guardarDatos();
       
       if (isChecked) {
-        // Confeti elegante con la nueva paleta de colores
+        // Confeti dinámico usando el color de acento actual
+        const currentColor = root.style.getPropertyValue('--text-main') || DEFAULT_ACCENT;
         confetti({ 
-          particleCount: 40, 
-          spread: 50, 
+          particleCount: 50, 
+          spread: 60, 
           origin: { y: 0.8 }, 
-          colors: ['#6A6A53', '#9B9879', '#4D342D'] 
+          colors: [currentColor, '#ffffff', '#84B3CE'] 
         });
       }
     }
 
-    // 4. LÓGICA DE NEGOCIO (EL PAYWALL)
     function agregarHabito() {
-      // Validar si es gratis y llegó al límite
       if (habitos.length >= LIMITE_GRATIS) {
         abrirModal();
         return;
@@ -402,601 +475,18 @@
       renderizarTabla();
     }
 
-    // 5. FUNCIONES DEL MODAL (VENTA)
-    function abrirModal() {
-      document.getElementById("premium-modal").style.display = "flex";
-    }
+    /* ==========================================
+       MODAL DE PAGO
+       ========================================== */
+    function abrirModal() { document.getElementById("premium-modal").style.display = "flex"; }
+    function cerrarModal() { document.getElementById("premium-modal").style.display = "none"; }
+    function simularPago() { alert("Integración de pasarela de pago (Stripe/LemonSqueezy) aquí."); cerrarModal(); }
 
-    function cerrarModal() {
-      document.getElementById("premium-modal").style.display = "none";
-    }
-
-    function simularPago() {
-      alert("Aquí se conectaría Stripe o LemonSqueezy para cobrar los 3,99 €.");
-      cerrarModal();
-    }
-
-    // Inicializar
-    window.onload = renderizarTabla;
-  </script>
-</body>
-</html>    body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1100px;
-      background-color: var(--bg-main);
-    }
-
-    .header-title {
-      text-align: center;
-      margin-bottom: 30px;
-      color: var(--text-main);
-      font-size: 28px;
-    }
-
-    /* Controles para añadir hábitos */
-    .add-habit-container {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 30px;
-      background: var(--bg-card);
-      padding: 20px;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    }
-
-    .add-habit-container select {
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-main);
-      color: var(--text-main);
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .add-habit-container input {
-      flex: 1;
-      padding: 12px 15px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-main);
-      color: var(--text-main);
-      font-size: 16px;
-    }
-
-    .add-habit-container input::placeholder {
-      color: var(--text-muted);
-    }
-
-    .add-habit-container button {
-      padding: 12px 25px;
-      border-radius: 8px;
-      border: none;
-      background-color: var(--border-color);
-      color: var(--bg-main);
-      font-weight: 700;
-      font-size: 16px;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
-    .add-habit-container button:hover {
-      opacity: 0.8;
-    }
-
-    /* Tabla de 18 días */
-    .table-container {
-      overflow-x: auto;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      background-color: var(--bg-main);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: center;
-    }
-
-    th, td {
-      border: 1px solid var(--border-color);
-      padding: 15px 5px;
-    }
-
-    th {
-      background-color: var(--bg-card);
-      color: var(--text-main);
-      font-weight: 700;
-    }
-
-    .col-habito {
-      text-align: left;
-      padding-left: 20px;
-      min-width: 250px;
-      font-weight: 600;
-    }
-
-    .col-day {
-      width: 40px;
-      color: var(--text-main);
-    }
-
-    /* Checkbox personalizado (Sky Blue) */
-    input[type="checkbox"] {
-      width: 22px;
-      height: 22px;
-      cursor: pointer;
-      accent-color: var(--accent-primary);
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <h1 class="header-title">AetherHabit Tracker</h1>
-
-    <!-- Controles con Emojis -->
-    <div class="add-habit-container">
-      <select id="emoji-select">
-        <option value="🧠">🧠</option>
-        <option value="🏋️">🏋️</option>
-        <option value="📖">📖</option>
-        <option value="💧">💧</option>
-        <option value="🥗">🥗</option>
-        <option value="💰">💰</option>
-        <option value="🎯">🎯</option>
-        <option value="🚀">🚀</option>
-        <option value="💻">💻</option>
-        <option value="🧹">🧹</option>
-      </select>
-      <input type="text" id="habit-input" placeholder="Nombre del nuevo hábito...">
-      <button onclick="agregarHabito()">Añadir Hábito</button>
-    </div>
-
-    <!-- Tabla -->
-    <div class="table-container">
-      <table id="habit-table">
-        <thead>
-          <tr id="table-header">
-            <th class="col-habito">Hábito</th>
-            <!-- Los días se generan con JS -->
-          </tr>
-        </thead>
-        <tbody id="table-body">
-          <!-- Los hábitos se generan con JS -->
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <script>
-    const TOTAL_DAYS = 18;
-
-    // 1. CARGA DE DATOS DESDE LOCALSTORAGE (¡Adiós a perder los datos!)
-    let habitos = JSON.parse(localStorage.getItem('aether_habits')) || [
-      { name: "🧠 Meditación", days: Array(TOTAL_DAYS).fill(false) },
-      { name: "🏋️ Ejercicio", days: Array(TOTAL_DAYS).fill(false) },
-      { name: "📖 Leer 10 paginas por la noche", days: Array(TOTAL_DAYS).fill(false) }
-    ];
-
-    // 2. FUNCIÓN PARA GUARDAR DATOS
-    function guardarDatos() {
-      localStorage.setItem('aether_habits', JSON.stringify(habitos));
-      enviarDatosAWidgwt(); // (Opcional) Calcula si quieres un resumen
-    }
-
-    // 3. RENDERIZAR TABLA
-    function renderizarTabla() {
-      // Cabecera de los días
-      const headerRow = document.getElementById("table-header");
-      headerRow.innerHTML = '<th class="col-habito">Hábito</th>';
-      for (let i = 1; i <= TOTAL_DAYS; i++) {
-        headerRow.innerHTML += `<th class="col-day">${i}</th>`;
-      }
-
-      // Filas de los hábitos
-      const tableBody = document.getElementById("table-body");
-      tableBody.innerHTML = "";
-
-      habitos.forEach((habito, habitIndex) => {
-        let filaHtml = `<tr><td class="col-habito">${habito.name}</td>`;
-        
-        for (let dayIndex = 0; dayIndex < TOTAL_DAYS; dayIndex++) {
-          const isChecked = habito.days[dayIndex] ? "checked" : "";
-          filaHtml += `
-            <td>
-              <input type="checkbox" ${isChecked} 
-                onchange="marcarDia(${habitIndex}, ${dayIndex}, this.checked)">
-            </td>`;
-        }
-        
-        filaHtml += `</tr>`;
-        tableBody.innerHTML += filaHtml;
-      });
-    }
-
-    // 4. MARCAR O DESMARCAR UN DÍA
-    function marcarDia(habitIndex, dayIndex, isChecked) {
-      habitos[habitIndex].days[dayIndex] = isChecked;
-      guardarDatos();
-      
-      // Lanzar confeti si se completa (Opcional, ya que tienes la librería)
-      if (isChecked) {
-        confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ['#C8D9E6', '#567C8D', '#FFFFFF'] });
-      }
-    }
-
-    // 5. AÑADIR NUEVO HÁBITO
-    function agregarHabito() {
-      const emoji = document.getElementById("emoji-select").value;
-      const texto = document.getElementById("habit-input").value.trim();
-
-      if (texto === "") return; // Evitar que añadan vacíos
-
-      const nombreCompleto = emoji + " " + texto;
-
-      habitos.push({
-        name: nombreCompleto,
-        days: Array(TOTAL_DAYS).fill(false)
-      });
-
-      document.getElementById("habit-input").value = ""; // Limpiar input
-      
-      guardarDatos();
-      renderizarTabla();
-    }
-
-    // 6. INICIALIZAR LA APLICACIÓN AL CARGAR LA PÁGINA
+    // Iniciar aplicación
     window.onload = () => {
+      cargarColores();
       renderizarTabla();
     };
-  </script>
-</body>
-</html>    [data-theme="midnight-purple"] { --bg-main: #120924; --bg-card: #1e1035; --bg-header: #1a0d30; --bg-hover: #2d184f; --border-color: #3b1f66; --text-main: #f5f3ff; --text-muted: #a78bfa; --accent-primary: #8b5cf6; }
-    [data-theme="emerald-forest"] { --bg-main: #062016; --bg-card: #0b2e21; --bg-header: #08271c; --bg-hover: #124533; --border-color: #195c45; --text-main: #ecfdf5; --text-muted: #6ee7b7; --accent-primary: #10b981; }
-    [data-theme="sunset-crimson"] { --bg-main: #210811; --bg-card: #330f1c; --bg-header: #2b0b17; --bg-hover: #481729; --border-color: #5e2037; --text-main: #fff1f2; --text-muted: #fda4af; --accent-primary: #f43f5e; }
-    [data-theme="ocean-deep"] { --bg-main: #031525; --bg-card: #08233c; --bg-header: #051c31; --bg-hover: #0f365c; --border-color: #164878; --text-main: #f0f9ff; --text-muted: #7dd3fc; --accent-primary: #0284c7; }
-    [data-theme="cyberpunk-neon"] { --bg-main: #0d0221; --bg-card: #19053d; --bg-header: #13032e; --bg-hover: #290861; --border-color: #ff007f; --text-main: #00f5ff; --text-muted: #ff77bc; --accent-primary: #ff007f; }
-    [data-theme="nordic-frost"] { --bg-main: #2e3440; --bg-card: #3b4252; --bg-header: #353c4a; --bg-hover: #434c5e; --border-color: #4c566a; --text-main: #eceff4; --text-muted: #88c0d0; --accent-primary: #81a1c1; }
-    [data-theme="warm-amber"] { --bg-main: #1c130b; --bg-card: #2c1e13; --bg-header: #24180e; --bg-hover: #3e2b1b; --border-color: #543c27; --text-main: #fffbeb; --text-muted: #fcd34d; --accent-primary: #f59e0b; }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
-    
-    body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 2rem 1rem; }
-
-    #app-container { width: 100%; max-width: 1200px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column; }
-
-    .app-header { background: var(--bg-header); padding: 1.5rem 2rem; border-bottom: 1px solid var(--border-color); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
-    .brand-title { font-size: 1.5rem; font-weight: 800; color: var(--accent-primary); display: flex; align-items: center; gap: 0.75rem; }
-    .header-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-
-    .btn { padding: 0.65rem 1.2rem; border-radius: 10px; border: none; font-weight: 700; font-size: 0.875rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
-    .btn-primary { background: var(--accent-primary); color: #ffffff; }
-    .btn-secondary { background: var(--bg-hover); color: var(--text-main); border: 1px solid var(--border-color); }
-
-    .theme-palette-bar { background: var(--bg-header); padding: 1rem 2rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 1rem; overflow-x: auto; }
-    .theme-swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--border-color); cursor: pointer; flex-shrink: 0; }
-    .theme-swatch.active { transform: scale(1.2); border-color: var(--text-main); }
-
-    .nav-tabs { display: flex; background: var(--bg-header); padding: 0 2rem; border-bottom: 1px solid var(--border-color); gap: 0.5rem; overflow-x: auto; }
-    .tab-btn { padding: 1rem 1.25rem; color: var(--text-muted); font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent; display: flex; align-items: center; gap: 0.6rem; white-space: nowrap; }
-    .tab-btn.active { color: var(--accent-primary); border-bottom-color: var(--accent-primary); }
-
-    .main-body { padding: 2rem; }
-    .view-pane { display: none; }
-    .view-pane.active { display: block; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-    .matrix-wrapper { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius); overflow-x: auto; margin-bottom: 2rem; }
-    .matrix-table { width: 100%; border-collapse: collapse; min-width: 900px; }
-    .matrix-table th, .matrix-table td { padding: 0.85rem; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); text-align: center; }
-    .matrix-table th:first-child, .matrix-table td:first-child { text-align: left; width: 240px; position: sticky; left: 0; background: var(--bg-card); z-index: 10; }
-
-    .cell-check { width: 26px; height: 26px; border-radius: 6px; border: 2px solid var(--border-color); margin: 0 auto; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; user-select: none; }
-    .cell-check.completed { background: var(--status-completed); border-color: var(--status-completed); color: #fff; }
-
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
-    .stat-card { background: var(--bg-main); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: var(--radius); }
-    .stat-card .lbl { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
-    .stat-card .val { font-size: 1.75rem; font-weight: 800; margin-top: 0.3rem; color: var(--text-main); }
-
-    .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
-    .chart-box { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.5rem; }
-
-    pre.widget-code { background: var(--bg-main); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 12px; color: #38bdf8; font-family: monospace; font-size: 0.85rem; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
-
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
-    .modal-backdrop.active { opacity: 1; pointer-events: auto; }
-    .modal-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); width: 100%; max-width: 440px; padding: 1.75rem; }
-    .form-group { margin-bottom: 1.25rem; }
-    .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-muted); }
-    .form-input { width: 100%; padding: 0.75rem 1rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 0.9rem; }
-  </style>
-</head>
-<body>
-
-  <div id="app-container">
-    <header class="app-header">
-      <div class="brand-title"><i class="fa-solid fa-fire-flame-curved"></i> AetherHabit SaaS</div>
-      <div class="header-actions">
-        <button class="btn btn-secondary" onclick="applyAutoThemeByTime()"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto Hora</button>
-        <button class="btn btn-primary" onclick="openModal()"><i class="fa-solid fa-plus"></i> Nuevo Hábito</button>
-      </div>
-    </header>
-
-    <div class="theme-palette-bar">
-      <div class="theme-swatch" data-theme="dark" style="background: #0b0f19;" onclick="setTheme('dark')"></div>
-      <div class="theme-swatch" data-theme="light" style="background: #f1f5f9;" onclick="setTheme('light')"></div>
-      <div class="theme-swatch" data-theme="midnight-purple" style="background: #120924;" onclick="setTheme('midnight-purple')"></div>
-      <div class="theme-swatch" data-theme="emerald-forest" style="background: #062016;" onclick="setTheme('emerald-forest')"></div>
-      <div class="theme-swatch" data-theme="sunset-crimson" style="background: #210811;" onclick="setTheme('sunset-crimson')"></div>
-      <div class="theme-swatch" data-theme="ocean-deep" style="background: #031525;" onclick="setTheme('ocean-deep')"></div>
-      <div class="theme-swatch" data-theme="cyberpunk-neon" style="background: #0d0221;" onclick="setTheme('cyberpunk-neon')"></div>
-      <div class="theme-swatch" data-theme="nordic-frost" style="background: #2e3440;" onclick="setTheme('nordic-frost')"></div>
-      <div class="theme-swatch" data-theme="warm-amber" style="background: #1c130b;" onclick="setTheme('warm-amber')"></div>
-    </div>
-
-    <nav class="nav-tabs">
-      <button class="tab-btn active" onclick="switchView('dashboard', this)"><i class="fa-solid fa-chart-line"></i> Panel</button>
-      <button class="tab-btn" onclick="switchView('analytics', this)"><i class="fa-solid fa-chart-pie"></i> Analíticas</button>
-      <button class="tab-btn" onclick="switchView('widget', this)"><i class="fa-solid fa-mobile-screen"></i> ScriptWidget</button>
-    </nav>
-
-    <div class="main-body">
-      <section id="dashboard" class="view-pane active">
-        <div class="stats-grid">
-          <div class="stat-card"><div class="lbl">Cumplimiento Mensual</div><div class="val" id="stat-rate">0%</div></div>
-          <div class="stat-card"><div class="lbl">Racha</div><div class="val" style="color: #f59e0b;">Activa 🔥</div></div>
-          <div class="stat-card"><div class="lbl">Progreso Hoy</div><div class="val" style="color: #10b981;" id="stat-today">0 / 0</div></div>
-        </div>
-        <div class="matrix-wrapper">
-          <table class="matrix-table" id="matrix-table"></table>
-        </div>
-      </section>
-
-      <section id="analytics" class="view-pane">
-        <div class="charts-grid">
-          <div class="chart-box"><canvas id="barChart" height="200"></canvas></div>
-          <div class="chart-box"><canvas id="doughnutChart" height="200"></canvas></div>
-        </div>
-      </section>
-
-      <section id="widget" class="view-pane">
-        <button class="btn btn-secondary" style="margin-bottom: 1rem;" onclick="copyWidgetCode()"><i class="fa-solid fa-copy"></i> Copiar Código</button>
-        <pre class="widget-code" id="widget-code-text"></pre>
-      </section>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="habit-modal">
-    <div class="modal-box">
-      <form onsubmit="saveNewHabit(event)">
-        <div class="form-group">
-          <label for="habit-name-input">Nuevo Hábito</label>
-          <input type="text" id="habit-name-input" class="form-input" placeholder="Ej: Leer 15 páginas" required>
-        </div>
-        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-          <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Guardar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    let habits = // 1. Intentamos cargar desde la memoria; si está vacío, cargamos los 3 por defecto
-let habitos = JSON.parse(localStorage.getItem('mis_habitos')) || [
-  { name: "🧠 Meditación", days: Array(18).fill(false) },
-  { name: "🏋️ Ejercicio", days: Array(18).fill(false) },
-  { name: "📖 Leer 10 paginas por la noche", days: Array(18).fill(false) }
-];
-
-// 2. Función clave para guardar los datos
-function guardarDatos() {
-  localStorage.setItem('mis_habitos', JSON.stringify(habitos));
-}
-    ];
-    let barChartInstance = null; 
-    let doughnutChartInstance = null;
-
-    function formatDateKey(year, month, day) {
-      const m = String(month + 1).padStart(2, '0');
-      const d = String(day).padStart(2, '0');
-      return `${year}-${m}-${d}`;
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('aether_custom_theme') || 'dark';
-      setTheme(savedTheme, false);
-      renderMatrix();
-    });
-
-    function setTheme(themeName, isUser = true) {
-      document.documentElement.setAttribute('data-theme', themeName);
-      if (isUser) localStorage.setItem('aether_custom_theme', themeName);
-      
-      document.querySelectorAll('.theme-swatch').forEach(s => {
-        s.classList.toggle('active', s.getAttribute('data-theme') === themeName);
-      });
-
-      if (barChartInstance) renderMatrix();
-    }
-
-    function applyAutoThemeByTime() {
-      const isNight = new Date().getHours() >= 20 || new Date().getHours() < 7;
-      setTheme(isNight ? 'dark' : 'light', true);
-    }
-
-    function saveState() { 
-      localStorage.setItem('aether_habits_saas', JSON.stringify(habits)); 
-    }
-
-    function renderMatrix() {
-      const table = document.getElementById('matrix-table');
-      const now = new Date(); 
-      const year = now.getFullYear();
-      const month = now.getMonth();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const todayDay = now.getDate();
-      
-      let html = `<thead><tr><th>Hábito</th>` + Array.from({length: daysInMonth}, (_, i) => `<th>${i+1}</th>`).join('') + `</tr></thead><tbody>`;
-      let totalCompleted = 0;
-      let todayTotal = 0;
-
-      habits.forEach(h => {
-        html += `<tr><td><b>${h.name}</b></td>`;
-        for (let d = 1; d <= daysInMonth; d++) {
-          const key = formatDateKey(year, month, d);
-          const ok = h.records[key] === 'completed';
-          if (ok) totalCompleted++; 
-          if (d === todayDay && ok) todayTotal++;
-          html += `<td><div class="cell-check ${ok ? 'completed' : ''}" onclick="toggleCell('${h.id}', '${key}')">${ok ? '✓' : ''}</div></td>`;
-        }
-        html += `</tr>`;
-      });
-      table.innerHTML = html + `</tbody>`;
-
-      const maxPossible = habits.length * daysInMonth;
-      const ratePct = maxPossible > 0 ? Math.round((totalCompleted / maxPossible) * 100) : 0;
-      
-      document.getElementById('stat-rate').innerText = ratePct + '%';
-      document.getElementById('stat-today').innerText = `${todayTotal} / ${habits.length}`;
-
-      renderAnalytics(daysInMonth, now);
-      generateScriptWidgetCode(todayTotal, habits.length);
-    }
-
-    function toggleCell(id, dateKey) {
-      const h = habits.find(x => x.id === id);
-      if (!h) return;
-      if (h.records[dateKey]) {
-        delete h.records[dateKey];
-      } else { 
-        h.records[dateKey] = 'completed'; 
-        if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
-      }
-      saveState(); 
-      renderMatrix();
-    }
-
-    function renderAnalytics(days, now) {
-      if (!document.getElementById('barChart') || !document.getElementById('doughnutChart')) return;
-      
-      const year = now.getFullYear();
-      const month = now.getMonth();
-      const labels = Array.from({length: days}, (_, i) => i + 1);
-      
-      const data = labels.map(d => {
-        const key = formatDateKey(year, month, d);
-        return habits.filter(h => h.records[key] === 'completed').length;
-      });
-
-      const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-primary').trim() || '#6366f1';
-      const borderCol = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim() || '#273549';
-
-      if (barChartInstance) barChartInstance.destroy();
-      barChartInstance = new Chart(document.getElementById('barChart').getContext('2d'), { 
-        type: 'bar', 
-        data: { 
-          labels, 
-          datasets: [{ label: 'Hábitos completados', data, backgroundColor: primaryColor }] 
-        },
-        options: { responsive: true, plugins: { legend: { display: false } } }
-      });
-
-      let completed = data.reduce((a, b) => a + b, 0);
-      let remaining = Math.max(0, (habits.length * days) - completed);
-      
-      if (doughnutChartInstance) doughnutChartInstance.destroy();
-      doughnutChartInstance = new Chart(document.getElementById('doughnutChart').getContext('2d'), { 
-        type: 'doughnut', 
-        data: { 
-          labels: ['Hecho', 'Pendiente'], 
-          datasets: [{ data: [completed, remaining], backgroundColor: ['#10b981', borderCol] }] 
-        },
-        options: { responsive: true }
-      });
-    }
-
-    function generateScriptWidgetCode(todayDone, totalHabits) {
-      const pct = totalHabits > 0 ? Math.round((todayDone / totalHabits) * 100) : 0;
-      const code = `// AetherHabit Widget - ScriptWidget
-const canvas = new Canvas(300, 300);
-
-// Fondo
-canvas.setFillColor("#0b0f19");
-canvas.fillRect(0, 0, 300, 300);
-
-// Título
-canvas.setTextColor("#6366f1");
-canvas.setFont("Helvetica-Bold", 22);
-canvas.drawText("🔥 AetherHabit", 20, 45);
-
-// Estado de hoy
-canvas.setTextColor("#f3f4f6");
-canvas.setFont("Helvetica", 16);
-canvas.drawText("Completados Hoy: ${todayDone} / ${totalHabits}", 20, 95);
-
-// Barra de progreso (Fondo)
-canvas.setFillColor("#273549");
-canvas.fillRect(20, 120, 260, 16);
-
-// Barra de progreso (Relleno)
-canvas.setFillColor("#10b981");
-canvas.fillRect(20, 120, Math.round(260 * (${pct} / 100)), 16);
-
-// Porcentaje
-canvas.setTextColor("#9ca3af");
-canvas.setFont("Helvetica", 14);
-canvas.drawText("Progreso: ${pct}%", 20, 165);
-
-// Presentar en ScriptWidget
-if (typeof config !== "undefined" && config.runsInWidget) {
-  Script.setWidget(canvas);
-} else {
-  canvas.present();
-}
-Script.complete();`;
-
-      document.getElementById('widget-code-text').innerText = code;
-    }
-
-    function switchView(id, btn) {
-      document.querySelectorAll('.view-pane').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(id).classList.add('active'); 
-      btn.classList.add('active');
-    }
-
-    function openModal() { document.getElementById('habit-modal').classList.add('active'); }
-    function closeModal() { document.getElementById('habit-modal').classList.remove('active'); }
-
-    function saveNewHabit(e) {
-      e.preventDefault(); 
-      const input = document.getElementById('habit-name-input');
-      const name = input.value.trim();
-      if (name) { 
-        habits.push({ id: Date.now().toString(), name, records: {} }); 
-        saveState(); 
-        renderMatrix(); 
-        closeModal(); 
-        input.value = ''; 
-      }
-    }
-
-    function copyWidgetCode() { 
-      navigator.clipboard.writeText(document.getElementById('widget-code-text').innerText); 
-      alert('¡Código de ScriptWidget copiado al portapapeles!'); 
-    }
   </script>
 </body>
 </html>
