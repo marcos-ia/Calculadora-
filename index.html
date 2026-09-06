@@ -16,25 +16,266 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
-    /* VARIABLES DE TEMAS Y COLORES */
+    /* LA NUEVA PALETA DE COLORES */
     :root {
-      --bg-main: #0b0f19;
-      --bg-card: #151d2a;
-      --bg-header: #111827;
-      --bg-hover: #1e293b;
-      --border-color: #273549;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --accent-primary: #6366f1;
-      --accent-glow: rgba(99, 102, 241, 0.25);
-      --status-completed: #10b981;
-      --radius: 16px;
-      --shadow: 0 10px 30px -5px rgba(0,0,0,0.3);
+      --bg-main: #2F4156;         /* Navy - Fondo general */
+      --bg-card: #567C8D;         /* Teal - Cajas y cabeceras */
+      --border-color: #C8D9E6;     /* Sky Blue - Bordes y acentos */
+      --text-main: #FFFFFF;        /* White - Texto principal */
+      --text-muted: #F5EFEB;       /* Beige - Texto secundario */
+      --accent-primary: #C8D9E6;   /* Sky Blue para los checks */
+      --radius: 12px;
     }
 
-    /* TEMAS DE COLOR */
-    [data-theme="light"] { --bg-main: #f1f5f9; --bg-card: #ffffff; --bg-header: #ffffff; --bg-hover: #e2e8f0; --border-color: #cbd5e1; --text-main: #0f172a; --text-muted: #64748b; --accent-primary: #4f46e5; }
-    [data-theme="midnight-purple"] { --bg-main: #120924; --bg-card: #1e1035; --bg-header: #1a0d30; --bg-hover: #2d184f; --border-color: #3b1f66; --text-main: #f5f3ff; --text-muted: #a78bfa; --accent-primary: #8b5cf6; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      background-color: var(--bg-main);
+    }
+
+    .header-title {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--text-main);
+      font-size: 28px;
+    }
+
+    /* Controles para añadir hábitos */
+    .add-habit-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+
+    .add-habit-container select {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-main);
+      color: var(--text-main);
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .add-habit-container input {
+      flex: 1;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-main);
+      color: var(--text-main);
+      font-size: 16px;
+    }
+
+    .add-habit-container input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .add-habit-container button {
+      padding: 12px 25px;
+      border-radius: 8px;
+      border: none;
+      background-color: var(--border-color);
+      color: var(--bg-main);
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .add-habit-container button:hover {
+      opacity: 0.8;
+    }
+
+    /* Tabla de 18 días */
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      background-color: var(--bg-main);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 15px 5px;
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .col-habito {
+      text-align: left;
+      padding-left: 20px;
+      min-width: 250px;
+      font-weight: 600;
+    }
+
+    .col-day {
+      width: 40px;
+      color: var(--text-main);
+    }
+
+    /* Checkbox personalizado (Sky Blue) */
+    input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      accent-color: var(--accent-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1 class="header-title">AetherHabit Tracker</h1>
+
+    <!-- Controles con Emojis -->
+    <div class="add-habit-container">
+      <select id="emoji-select">
+        <option value="🧠">🧠</option>
+        <option value="🏋️">🏋️</option>
+        <option value="📖">📖</option>
+        <option value="💧">💧</option>
+        <option value="🥗">🥗</option>
+        <option value="💰">💰</option>
+        <option value="🎯">🎯</option>
+        <option value="🚀">🚀</option>
+        <option value="💻">💻</option>
+        <option value="🧹">🧹</option>
+      </select>
+      <input type="text" id="habit-input" placeholder="Nombre del nuevo hábito...">
+      <button onclick="agregarHabito()">Añadir Hábito</button>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-container">
+      <table id="habit-table">
+        <thead>
+          <tr id="table-header">
+            <th class="col-habito">Hábito</th>
+            <!-- Los días se generan con JS -->
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <!-- Los hábitos se generan con JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_DAYS = 18;
+
+    // 1. CARGA DE DATOS DESDE LOCALSTORAGE (¡Adiós a perder los datos!)
+    let habitos = JSON.parse(localStorage.getItem('aether_habits')) || [
+      { name: "🧠 Meditación", days: Array(TOTAL_DAYS).fill(false) },
+      { name: "🏋️ Ejercicio", days: Array(TOTAL_DAYS).fill(false) },
+      { name: "📖 Leer 10 paginas por la noche", days: Array(TOTAL_DAYS).fill(false) }
+    ];
+
+    // 2. FUNCIÓN PARA GUARDAR DATOS
+    function guardarDatos() {
+      localStorage.setItem('aether_habits', JSON.stringify(habitos));
+      enviarDatosAWidgwt(); // (Opcional) Calcula si quieres un resumen
+    }
+
+    // 3. RENDERIZAR TABLA
+    function renderizarTabla() {
+      // Cabecera de los días
+      const headerRow = document.getElementById("table-header");
+      headerRow.innerHTML = '<th class="col-habito">Hábito</th>';
+      for (let i = 1; i <= TOTAL_DAYS; i++) {
+        headerRow.innerHTML += `<th class="col-day">${i}</th>`;
+      }
+
+      // Filas de los hábitos
+      const tableBody = document.getElementById("table-body");
+      tableBody.innerHTML = "";
+
+      habitos.forEach((habito, habitIndex) => {
+        let filaHtml = `<tr><td class="col-habito">${habito.name}</td>`;
+        
+        for (let dayIndex = 0; dayIndex < TOTAL_DAYS; dayIndex++) {
+          const isChecked = habito.days[dayIndex] ? "checked" : "";
+          filaHtml += `
+            <td>
+              <input type="checkbox" ${isChecked} 
+                onchange="marcarDia(${habitIndex}, ${dayIndex}, this.checked)">
+            </td>`;
+        }
+        
+        filaHtml += `</tr>`;
+        tableBody.innerHTML += filaHtml;
+      });
+    }
+
+    // 4. MARCAR O DESMARCAR UN DÍA
+    function marcarDia(habitIndex, dayIndex, isChecked) {
+      habitos[habitIndex].days[dayIndex] = isChecked;
+      guardarDatos();
+      
+      // Lanzar confeti si se completa (Opcional, ya que tienes la librería)
+      if (isChecked) {
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ['#C8D9E6', '#567C8D', '#FFFFFF'] });
+      }
+    }
+
+    // 5. AÑADIR NUEVO HÁBITO
+    function agregarHabito() {
+      const emoji = document.getElementById("emoji-select").value;
+      const texto = document.getElementById("habit-input").value.trim();
+
+      if (texto === "") return; // Evitar que añadan vacíos
+
+      const nombreCompleto = emoji + " " + texto;
+
+      habitos.push({
+        name: nombreCompleto,
+        days: Array(TOTAL_DAYS).fill(false)
+      });
+
+      document.getElementById("habit-input").value = ""; // Limpiar input
+      
+      guardarDatos();
+      renderizarTabla();
+    }
+
+    // 6. INICIALIZAR LA APLICACIÓN AL CARGAR LA PÁGINA
+    window.onload = () => {
+      renderizarTabla();
+    };
+  </script>
+</body>
+</html>    [data-theme="midnight-purple"] { --bg-main: #120924; --bg-card: #1e1035; --bg-header: #1a0d30; --bg-hover: #2d184f; --border-color: #3b1f66; --text-main: #f5f3ff; --text-muted: #a78bfa; --accent-primary: #8b5cf6; }
     [data-theme="emerald-forest"] { --bg-main: #062016; --bg-card: #0b2e21; --bg-header: #08271c; --bg-hover: #124533; --border-color: #195c45; --text-main: #ecfdf5; --text-muted: #6ee7b7; --accent-primary: #10b981; }
     [data-theme="sunset-crimson"] { --bg-main: #210811; --bg-card: #330f1c; --bg-header: #2b0b17; --bg-hover: #481729; --border-color: #5e2037; --text-main: #fff1f2; --text-muted: #fda4af; --accent-primary: #f43f5e; }
     [data-theme="ocean-deep"] { --bg-main: #031525; --bg-card: #08233c; --bg-header: #051c31; --bg-hover: #0f365c; --border-color: #164878; --text-main: #f0f9ff; --text-muted: #7dd3fc; --accent-primary: #0284c7; }
